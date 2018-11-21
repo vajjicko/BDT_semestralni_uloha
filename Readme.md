@@ -11,7 +11,7 @@
 ### T1: Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářství, …)?
 
 #### Výsledná data
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=275794259&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B15" >
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=275794259&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B15" height=450px>
 </iframe>
 
 #### Vizualizace výsledku
