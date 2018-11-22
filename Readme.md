@@ -1,6 +1,16 @@
 # BDT - Semestrální úloha
 
-[create an anchor](#Task-1)
+[Task 1](#Task-1)
+[Task 2](#Task-2)
+[Task 3](#Task-3)
+[Task 4](#Task-4)
+[Task 5](#Task-5)
+[Task 6](#Task-6)
+[Task 7](#Task-7)
+[Task 8](#Task-8)
+[Task 9](#Task-9)
+[Task 10](#Task-10)
+[Task 11](#Task-11)
 
 
 ## Úvod
@@ -12,7 +22,10 @@
 ## Úkoly
 
 ### TASK 1
- Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářství, …)?
+#### Zadání
+Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářství, …)?
+
+#### Informace
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=275794259&amp;single=true&amp;widget=false&amp;headers=false&amp;range=A1:B15"></iframe>
@@ -25,11 +38,49 @@
 SELECT `Crime type`, COUNT(`Crime type`) as Count FROM crimes GROUP BY `Crime type` ORDER BY Count DESC;
 ```
 
-### T2: Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
+### TASK 2
+#### Zadání
+Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
 
-### T7: Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu longitude vs. latitude) vyřešené a nevyřešené případy.
+#### Informace
 
-### SQL
+### TASK 3
+#### Zadání
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+#### SQL
+
+### TASK 4
+#### Zadání
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+#### SQL
+
+### TASK 5
+#### Zadání
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+#### SQL
+
+### TASK 6
+#### Zadání
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+#### SQL
+
+### TASK 7
+#### Zadání
+Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu longitude vs. latitude) vyřešené a nevyřešené případy.
+
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+<iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
+#### SQL
 ```SQL
 WITH outcomesunique as
 (
@@ -66,11 +117,20 @@ SELECT lat, lng, resolved
 FROM allinfo;
 ```
 
+### TASK 8
+#### Zadání
+#### Informace
+#### Výsledná data
 #### Vizualizace výsledku
-<iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
+#### SQL
 
-### T9: Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
-
+### TASK 9
+#### Zadání
+Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+<iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
 ### SQL
 ```SQL
 INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
@@ -87,5 +147,16 @@ GROUP BY crimes.`Month`, region.`RGN11CD`, region.`RGN11NM`
 ORDER BY crimes.`Month` ASC, count DESC;
 ```
 
+### TASK 10
+#### Zadání
+#### Informace
+#### Výsledná data
 #### Vizualizace výsledku
-<iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
+#### SQL
+
+### TASK 11
+#### Zadání
+#### Informace
+#### Výsledná data
+#### Vizualizace výsledku
+#### SQL
