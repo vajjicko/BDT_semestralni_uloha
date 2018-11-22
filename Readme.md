@@ -80,6 +80,7 @@ Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu l
 #### Výsledná data
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
+
 #### SQL
 ```SQL
 WITH outcomesunique as
@@ -131,6 +132,7 @@ Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíj�
 #### Výsledná data
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
+
 ### SQL
 ```SQL
 INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
