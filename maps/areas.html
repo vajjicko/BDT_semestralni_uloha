@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>No. of crimes by month in 2017</title>
+  <!-- Styles -->
+<style>
+#chartdiv {
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+}
+.slidecontainer {
+  position: absolute;
+  width: 30%;
+  min-width: 200px;
+  bottom: 10px;
+  text-align: center;
+}
+.slider {
+  width: 100%;
+}
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/3/ammap.js"></script>
+<script src="https://www.amcharts.com/lib/3/maps/js/unitedKingdomLow.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.1/papaparse.min.js"></script>
+</head>
+<body>
+  <div id="chartdiv"></div>
+  <div class="slidecontainer">
+    <span class="valspan">2017-01</span>
+    <input type="range" min="1" max="12" value="1" class="slider" id="myRange">
+  </div>
+<script>
+var titles = []
+titles.push({"text": "United Kingdom"})
+titles.push({"text":"No. of crimes by month in 2017"})
+
+var map = AmCharts.makeChart( "chartdiv", {
+  "type": "map",
+  "theme": "none",
+  "colorSteps": 6,
+  "dataProvider": {
+    "mapURL": "./unitedKingdomLow.svg",
+    "getAreasFromMap": true,
+    "zoomLevel": 0.9,
+    "areas": []
+  },
+  "areasSettings": {
+    "autoZoom": true,
+    "balloonText": "[[title]]: <strong>[[value]]</strong>"
+  },
+  "imagesSettings": {
+    "labelPosition": "middle",
+    "labelFontSize": 14
+  },
+  "valueLegend": {
+    "right": 10,
+    "minValue": "little",
+    "maxValue": "a lot!"
+  },
+  "zoomControl": {
+    "minZoomLevel": 0.9
+  },
+  "titles": titles,
+  "listeners": [ {
+    "event": "init",
+    "method": updateHeatmap
+  } ]
+} )
+
+
+function updateHeatmap( event ) {
+  var map = event.chart
+  if ( map.dataGenerated )
+    return
+  if ( map.dataProvider.areas.length === 0 ) {
+    setTimeout( () => updateHeatmap(event), 100 )
+    return
+  }
+  map.dataProvider.images = [];
+  for ( x in map.dataProvider.areas ) {
+    var area = map.dataProvider.areas[ x ];
+    var image = new AmCharts.MapImage();
+    image.latitude = map.getAreaCenterLatitude( area );
+    image.longitude = map.getAreaCenterLongitude( area );
+    image.label = area.id.substr( 3 );
+    image.title = area.title;
+    image.linkToObject = area;
+    map.dataProvider.images.push( image );
+  }
+  map.dataGenerated = true
+  Papa.parse('./t9.csv', {
+    header: true,
+    download: true,
+    dynamicTyping: true,
+    complete: function(results) {
+      console.log(results.data)
+      for (var d of results.data) {
+        const month = month_to_num[d.month]
+        // console.log(d.month, month, d.region, region_to_area(d.region))
+        data[month][region_to_area(d.region)] = d.count
+      }
+      updateMap(val)
+      // console.log(data)
+    }
+  })
+  updateMap(val)
+}
+
+function updateMap(val) {
+  for ( var i = 0; i < map.dataProvider.areas.length; i++ ) {
+    map.dataProvider.areas[i].value = data[val-1][i]
+    map.dataProvider.images[i].label = data[val-1][i]
+  }
+  // map.valueLegend.minValue = Math.random()
+  // map.valueLegend.maxValue = Math.random()
+  window.setTimeout(function() {
+    map.validateNow()
+  }, 1)
+}
+
+var data = []
+var totalmonths = 12
+var areas = 16
+var num_to_month = [
+  '2017-01',
+  '2017-02',
+  '2017-03',
+  '2017-04',
+  '2017-05',
+  '2017-06',
+  '2017-07',
+  '2017-08',
+  '2017-09',
+  '2017-10',
+  '2017-11',
+  '2017-12',
+]
+
+var month_to_num = {
+  '2017-01': 0,
+  '2017-02': 1,
+  '2017-03': 2,
+  '2017-04': 3,
+  '2017-05': 4,
+  '2017-06': 5,
+  '2017-07': 6,
+  '2017-08': 7,
+  '2017-09': 8,
+  '2017-10': 9,
+  '2017-11': 10,
+  '2017-12': 11,
+}
+
+function region_to_area(region) {
+  var counter = 0
+  for (var a of map.dataProvider.areas) {
+    if (a.title.toLowerCase().includes(region.toLowerCase())) return counter
+    counter++
+  }
+  return null
+}
+
+for (var j = 0; j < totalmonths; j++) {
+  var d = []
+  for (var i = 0; i < areas; i++) {
+    // d.push(Math.round( Math.random() * 10000 ))
+    d.push(0)
+  }
+  data.push(d)
+}
+
+var slider = document.querySelector('#myRange')
+var valspan = document.querySelector('.valspan')
+var val = slider.value
+
+slider.addEventListener('input', function(e) {
+  val = e.srcElement.value
+  updateMap(val)
+  valspan.innerHTML = num_to_month[val-1]
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>Markers for "Possession of weapons" 2017-10 occurences</title>
+    <style>
+      #map {
+        height: 100vh;
+        width: 100vw;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.1/papaparse.min.js"></script>
+    <script>
+      var map
+      var markers = []
+      var bounds
+
+      function initMap() {
+        bounds = new google.maps.LatLngBounds()
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: {lat: 0, lng: 0},
+          mapTypeId: 'terrain'
+        })
+
+        Papa.parse('./t7.csv', {
+          header: true,
+          download: true,
+          dynamicTyping: true,
+          complete: function(results) {
+            console.log(results)
+            markers = results.data
+            addAllMarkers(markers)
+            map.fitBounds(bounds)
+            map.setCenter({
+              lat: markers[markers.length-1].lat,
+              lng: markers[markers.length-1].lng,
+            })
+          }
+        })
+      }
+
+      function addAllMarkers(markers) {
+        for (m of markers) {
+          addMarker(m)
+        }
+      }
+
+      function addMarker(marker) {
+        const obj = {
+          map: map,
+          position: {
+            lat: marker.lat,
+            lng: marker.lng,
+          },
+          icon: {
+            url: marker.resolved ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+          },
+        }
+
+        bounds.extend(obj.position)
+        new google.maps.Marker(obj)
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAECPHFIc5IN-AIcY2-6dK3DLTht-MfS6w&callback=initMap"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
