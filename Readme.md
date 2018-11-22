@@ -16,7 +16,7 @@
   * [Task 9](#Task-9)
   * [Task 10](#Task-10)
   * [Task 11](#Task-11)
-
+* [Závěr](#Závěr)
 
 ## Úvod
 
@@ -167,3 +167,5 @@ ORDER BY crimes.`Month` ASC, count DESC;
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
+
+## Závěr
