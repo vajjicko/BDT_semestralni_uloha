@@ -995,6 +995,10 @@ Odkaz na data ve formátu csv: [t6.csv](data/t6.csv)
 Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu longitude vs. latitude) vyřešené a nevyřešené případy.
 
 #### Komentář
+Vizualizace zaznamenaných kriminalit typu **"Possession of weapons"** v měsící **2017-10** pomocí barevných markerů v Google Maps.
+
+* Zelený marker je vyřešený případ
+* Červený marker je nevyřešený případ
 
 #### Výsledná data
 
@@ -1128,6 +1132,7 @@ Odkaz na data ve formátu csv: [t8_3.csv](data/t8_3.csv)
 Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
 
 #### Komentář
+Vizualizujeme počet kriminalit na region napříč měsíci roku 2017. Ovládání zprostředkovává tahátko v levém dolním rohu.
 
 #### Výsledná data
 
@@ -1200,6 +1205,43 @@ Odkaz na data ve formátu csv: [t10.csv](data/t10.csv)
 Jaký existuje vztah úrovni zločinnosti a brexit preferenci?
 
 #### Komentář
+##### Data
+Z tabulky brexit jsme vyextrahovali volební preference, velikost electorátu a % voličů pro regiony a oblasti. Z tabulky crimes poté díky JOINům s tabulkou ward počty zločinů pro jednotlivé regiony a oblasti.
+
+##### Metodika
+Data jsou spojitá X spojitá, volíme tedy lineární regresi jako náš nástroj testování nulové hypotézy.
+
+##### Nulová hypotéza H0
+Neexistuje žádný vztah mezi počtem kriminalit v oblasti nebo regionu a % voličů či volební preferencí pro odchod z EU
+
+##### Alternativní hypotéza Ha
+Existuje spojitost mezi počtem kriminalit v oblasti nebo regionu a % voličů či volební preferencí pro odchod z EU
+
+##### Podle region
+* kriminalita X preference => R^2 = 0.051
+* kriminalita X % voličů => R^2 = 0.865
+
+Dat je velice málo (10 samplů). Lze zmenšit granularitu pomocí area místo region. To zvýší sílu testu.
+
+##### Podle area (s outliery)
+* kriminalita X preference => R^2 = 0.037
+* kriminalita X % voličů => R^2 = 0.25
+
+Síla testu zvětšena (348 samplů), bohužel zde existují outlieři (2), které je třeba oříznout.
+* City of London (4.21 crimes per capita)
+* Westminster (1.75 crimes per capita)
+
+
+##### Podle area (bez outlierů)
+* kriminalita X preference => R^2 = 0.004
+* kriminalita X % voličů => R^2 = 0.617
+
+Síla testu zachována, outlieři oříznuti (346 zbývajících samplů).
+
+#### Závěr
+* Zamítáme H0 ve prospěch Ha.
+* Lineární regrese s R^2 hodnotou 0.004 **neprokázala žádný vztah** mezi počtem kriminalit v oblasti a volební preferencí odchodu z EU
+* Lineární regrese s poměrně vysokou R^2 hodnotou 0.617 poukazuje na **vztah mezi počtem kriminalit v oblasti a procentuálním počtem voličů**. Vztah je záporný (tangent parametr beta1 < 0), tedy čím více zaznamenaných kriminalit, tím méně % voličů.
 
 #### Výsledná data
 ##### Podle region
