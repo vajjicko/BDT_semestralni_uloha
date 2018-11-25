@@ -6,6 +6,7 @@
 * [Technologie](#technologie)
   * [Dočasné tabulky](#dočasné-tabulky)
   * [Finální tabulky](#dočasné-tabulky)
+  * [Výsledky dotazů](#výsledky-dotazů)
 * [Úkoly](#úkoly)
   * [Task 1](#task-1)
   * [Task 2](#task-2)
@@ -41,7 +42,6 @@ Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-su
 
 #### Ward to county
 Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
-
 
 ## Technologie
 
@@ -686,6 +686,16 @@ DROP TABLE outcomes_tmp;
 DROP TABLE stopandsearch_tmp;
 ```
 
+### Výsledky dotazů
+Výsledky dotazů byly ukládány do souborů, ze kterých bylo následně sestaveno vždy výsledné CSV pro daný dotaz.
+
+Do všech dotazů byl přidán následující kus kódu, který zajistil generování výsledků do souborů.
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
+```
+
 ## Úkoly
 
 ### TASK 1
@@ -702,7 +712,11 @@ Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářst
 
 #### SQL
 ```SQL
-SELECT `Crime type`, COUNT(`Crime type`) as Count FROM crimes GROUP BY `Crime type` ORDER BY Count DESC;
+SELECT `Crime type`,
+       COUNT(`Crime type`) AS COUNT
+FROM crimes
+GROUP BY `Crime type`
+ORDER BY COUNT DESC;
 ```
 
 ### TASK 2
@@ -719,19 +733,31 @@ Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)
 #### SQL
 
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT * FROM (SELECT `LSOA name`, COUNT(`LSOA name`) as count FROM crimes WHERE `LSOA name` IS NOT NULL AND `LSOA name` != '' GROUP BY `LSOA name`) as res ORDER BY res.count DESC LIMIT 10;
-
+SELECT *
+FROM
+  (SELECT `LSOA name`,
+          COUNT(`LSOA name`) AS COUNT
+   FROM crimes
+   WHERE `LSOA name` IS NOT NULL
+     AND `LSOA name` != ''
+   GROUP BY `LSOA name`) AS res
+ORDER BY res.count DESC
+LIMIT 10;
 ```
 
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT * FROM (SELECT `LSOA name`, `Crime type`, COUNT(*) as count FROM 
-crimes WHERE `LSOA name` IS NOT NULL AND `LSOA Name` != '' GROUP BY `LSOA name`, `Crime type`) as res ORDER BY res.count DESC LIMIT 10;
+SELECT *
+FROM
+  (SELECT `LSOA name`,
+          `Crime type`,
+          COUNT(*) AS COUNT
+   FROM crimes
+   WHERE `LSOA name` IS NOT NULL
+     AND `LSOA Name` != ''
+   GROUP BY `LSOA name`,
+            `Crime type`) AS res
+ORDER BY res.count DESC
+LIMIT 10;
 ```
 
 ### TASK 3
@@ -748,10 +774,11 @@ Jak se vyvíjejí časově počty evidovaných případů?
 
 #### SQL
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT `Month`, COUNT(`Crime ID`) AS Count FROM crimes GROUP BY `MONTH` ORDER BY `Month` ASC;
+SELECT `Month`,
+       COUNT(`Crime ID`) AS COUNT
+FROM crimes
+GROUP BY `MONTH`
+ORDER BY `Month` ASC;
 ```
 
 ### TASK 4
@@ -770,21 +797,47 @@ K dispozici jsou i data o výsledcích jednotlivých případů. Jaký je v jedn
 
 #### SQL
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT DISTINCT `Outcome type` from outcomes;
+SELECT DISTINCT `Outcome type`
+FROM outcomes;
 ```
 
 ```SQL
-WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
-allinfo as( SELECT crimes.`Crime ID`, crimes.`Crime type`, outcomesunique.`Outcome type` FROM crimes JOIN outcomesunique ON (crimes.`Crime ID` = outcomesunique.`Crime ID`)),
-allcrimes as( SELECT * FROM (SELECT `Crime type`, COUNT(`Crime type`) as count FROM allinfo WHERE `Crime type` IS NOT NULL AND `Crime type` != '' GROUP BY `Crime type`) as res),
-nosuspectcrimes as( SELECT * FROM (SELECT `Crime type`, COUNT(`Crime type`) as count FROM allinfo WHERE `Crime type` IS NOT NULL AND `Crime type` != '' AND `Outcome type` LIKE '%no suspect identified%' GROUP BY `Crime type`) as res)
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT allcrimes.`Crime type`, allcrimes.count as `All solved crimes`, (allcrimes.count-nosuspectcrimes.count) as `Successfully solved crimes`, nosuspectcrimes.count as `No suspect`, (nosuspectcrimes.count/allcrimes.count) AS Ratio FROM allcrimes LEFT JOIN nosuspectcrimes ON (allcrimes.`Crime type` = nosuspectcrimes.`Crime type`) ORDER BY Ratio;
+WITH outcomesunique as
+  (SELECT *
+   FROM
+     (SELECT *, ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
+                                   ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
+      FROM outcomes) AS res
+   WHERE res.ROW_NUM = 1),
+                    allinfo as
+  (SELECT crimes.`Crime ID`, crimes.`Crime type`, outcomesunique.`Outcome type`
+   FROM crimes
+   JOIN outcomesunique ON (crimes.`Crime ID` = outcomesunique.`Crime ID`)),
+                            allcrimes as
+  (SELECT *
+   FROM
+     (SELECT `Crime type`, COUNT(`Crime type`) AS COUNT
+      FROM allinfo
+      WHERE `Crime type` IS NOT NULL
+        AND `Crime type` != ''
+      GROUP BY `Crime type`) AS res),
+                                      nosuspectcrimes as
+  (SELECT *
+   FROM
+     (SELECT `Crime type`, COUNT(`Crime type`) AS COUNT
+      FROM allinfo
+      WHERE `Crime type` IS NOT NULL
+        AND `Crime type` != ''
+        AND `Outcome type` LIKE '%no suspect identified%'
+      GROUP BY `Crime type`) AS res)
+SELECT allcrimes.`Crime type`,
+       allcrimes.count AS `All solved crimes`,
+       (allcrimes.count-nosuspectcrimes.count) AS `Successfully solved crimes`,
+       nosuspectcrimes.count AS `No suspect`,
+       (nosuspectcrimes.count/allcrimes.count) AS Ratio
+FROM allcrimes
+LEFT JOIN nosuspectcrimes ON (allcrimes.`Crime type` = nosuspectcrimes.`Crime type`)
+ORDER BY Ratio;
 ```
 
 ### TASK 5
@@ -801,10 +854,22 @@ Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
 
 #### SQL
 ```SQL
-WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
-crimeProcedure as(SELECT crimes.`Crime type`, outcomesunique.`Month` as end_date, crimes.`Month` as start_date FROM outcomesunique
-JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
-SELECT crimeProcedure.`Crime type` as `Crime type`, AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date,'yyyy-MM'))),to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date,'yyyy-MM'))))) AS `Average solve time` FROM crimeProcedure GROUP BY crimeProcedure.`Crime type` ORDER BY `Average solve time`;
+WITH outcomesunique as
+  (SELECT *
+   FROM
+     (SELECT *, ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
+                                   ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
+      FROM outcomes) AS res
+   WHERE res.ROW_NUM = 1),
+                    crimeProcedure as
+  (SELECT crimes.`Crime type`, outcomesunique.`Month` AS end_date, crimes.`Month` AS start_date
+   FROM outcomesunique
+   JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
+SELECT crimeProcedure.`Crime type` AS `Crime type`,
+       AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date, 'yyyy-MM'))), to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date, 'yyyy-MM'))))) AS `Average solve time`
+FROM crimeProcedure
+GROUP BY crimeProcedure.`Crime type`
+ORDER BY `Average solve time`;
 ```
 
 ### TASK 6
@@ -821,10 +886,23 @@ Která oddělení jsou v uzavírání případů nejrychlejší?
 
 #### SQL
 ```SQL
-WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
-crimeProcedure as(SELECT crimes.`Reported by`, outcomesunique.`Month` as end_date, crimes.`Month` as start_date FROM outcomesunique
-JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
-SELECT crimeProcedure.`Reported by`, AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date,'yyyy-MM'))),to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date,'yyyy-MM'))))) AS `Average solve time` FROM crimeProcedure GROUP BY crimeProcedure.`Reported by` ORDER BY `Average solve time` LIMIT 20;
+WITH outcomesunique as
+  (SELECT *
+   FROM
+     (SELECT *, ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
+                                   ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
+      FROM outcomes) AS res
+   WHERE res.ROW_NUM = 1),
+                    crimeProcedure as
+  (SELECT crimes.`Reported by`, outcomesunique.`Month` AS end_date, crimes.`Month` AS start_date
+   FROM outcomesunique
+   JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
+SELECT crimeProcedure.`Reported by`,
+       AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date, 'yyyy-MM'))), to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date, 'yyyy-MM'))))) AS `Average solve time`
+FROM crimeProcedure
+GROUP BY crimeProcedure.`Reported by`
+ORDER BY `Average solve time`
+LIMIT 20;
 ```
 
 ### TASK 7
@@ -840,38 +918,32 @@ Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu l
 
 #### SQL
 ```SQL
-WITH outcomesunique as
-(
-  SELECT * FROM (
-    SELECT *, ROW_NUMBER() OVER (
-      PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC
-    ) AS ROW_NUM FROM outcomes
-  ) AS res WHERE res.ROW_NUM = 1
-),
-allinfo as
-(
-  SELECT 
-    crimes.`Latitude` AS lat,
-    crimes.`Longitude` AS lng,
-    CASE
-      WHEN outcomesunique.`Outcome type` IS NULL THEN 0
-      ELSE 1
-    END
-    AS resolved
-    FROM crimes
-    LEFT JOIN outcomesunique ON
-      (crimes.`Crime ID` = outcomesunique.`Crime ID`)
-    WHERE crimes.`Crime type` = 'Possession of weapons'
-      AND crimes.`Month` = '2017-10'
-      AND crimes.`Longitude` IS NOT NULL
-      AND crimes.`Longitude` != 0
-      AND crimes.`Latitude` IS NOT NULL
-      AND crimes.`Latitude` != 0
-)
-INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT lat, lng, resolved
+WITH outcomesunique AS
+  ( SELECT *
+   FROM
+     ( SELECT *,
+              ROW_NUMBER() OVER ( PARTITION BY outcomes.`Crime ID`
+                                 ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC ) AS ROW_NUM
+      FROM outcomes ) AS res
+   WHERE res.ROW_NUM = 1 ),
+     allinfo AS
+  ( SELECT crimes.`Latitude` AS lat,
+           crimes.`Longitude` AS lng,
+           CASE
+               WHEN outcomesunique.`Outcome type` IS NULL THEN 0
+               ELSE 1
+           END AS resolved
+   FROM crimes
+   LEFT JOIN outcomesunique ON (crimes.`Crime ID` = outcomesunique.`Crime ID`)
+   WHERE crimes.`Crime type` = 'Possession of weapons'
+     AND crimes.`Month` = '2017-10'
+     AND crimes.`Longitude` IS NOT NULL
+     AND crimes.`Longitude` != 0
+     AND crimes.`Latitude` IS NOT NULL
+     AND crimes.`Latitude` != 0 )
+SELECT lat,
+       lng,
+       resolved
 FROM allinfo;
 ```
 
@@ -916,30 +988,44 @@ Stop and Search data: Popište rozdělení času prohlídky (například pomocí
 #### SQL
 ##### Rozložení během dne
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT * FROM (SELECT `Type`, substr(`Date`, 12, 2) AS hour, COUNT(*) AS count FROM 
-stopandsearch GROUP BY `Type`, substr(`Date`, 12, 2)) AS res ORDER BY `Type`, hour;
-
+SELECT *
+FROM
+  (SELECT `Type`,
+          substr(`Date`, 12, 2) AS hour,
+          COUNT(*) AS COUNT
+   FROM stopandsearch
+   GROUP BY `Type`,
+            substr(`Date`, 12, 2)) AS res
+ORDER BY `Type`,
+         hour;
 ```
 
 ##### Rozložení během měsíce
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT * FROM (SELECT `Type`, substr(`Date`, 9, 2) AS day, COUNT(*) AS count FROM 
-stopandsearch GROUP BY `Type`, substr(`Date`, 9, 2)) AS res ORDER BY `Type`, day;
+SELECT *
+FROM
+  (SELECT `Type`,
+          substr(`Date`, 9, 2) AS DAY,
+          COUNT(*) AS COUNT
+   FROM stopandsearch
+   GROUP BY `Type`,
+            substr(`Date`, 9, 2)) AS res
+ORDER BY `Type`,
+         DAY;
 ```
 
 ##### Rozložení během roku
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT * FROM (SELECT `Type`, substr(`Date`, 6, 2) AS month, COUNT(*) AS count FROM 
-stopandsearch GROUP BY `Type`, substr(`Date`, 6, 2)) AS res ORDER BY `Type`, month;
+SELECT *
+FROM
+  (SELECT `Type`,
+          substr(`Date`, 6, 2) AS MONTH,
+          COUNT(*) AS COUNT
+   FROM stopandsearch
+   GROUP BY `Type`,
+            substr(`Date`, 6, 2)) AS res
+ORDER BY `Type`,
+         MONTH;
 ```
 
 ### TASK 9
@@ -955,18 +1041,21 @@ Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíj�
 
 ### SQL
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT crimes.`Month`, COUNT(crimes.`Crime ID`) AS count, region.`RGN11NM` AS `Region name`, region.`RGN11CD` AS `Region code`
+SELECT crimes.`Month`,
+       COUNT(crimes.`Crime ID`) AS COUNT,
+       region.`RGN11NM` AS `Region name`,
+       region.`RGN11CD` AS `Region code`
 FROM crimes
 LEFT JOIN region ON (crimes.`LSOA code` = region.`LSOA11CD`)
 WHERE crimes.`LSOA code` IS NOT NULL
-AND region.`RGN11NM` IS NOT NULL
-AND crimes.`Month` >= '2017-01'
-AND crimes.`Month` <= '2017-12'
-GROUP BY crimes.`Month`, region.`RGN11CD`, region.`RGN11NM`
-ORDER BY crimes.`Month` ASC, count DESC;
+  AND region.`RGN11NM` IS NOT NULL
+  AND crimes.`Month` >= '2017-01'
+  AND crimes.`Month` <= '2017-12'
+GROUP BY crimes.`Month`,
+         region.`RGN11CD`,
+         region.`RGN11NM`
+ORDER BY crimes.`Month` ASC,
+         COUNT DESC;
 ```
 
 ### TASK 10
@@ -980,9 +1069,29 @@ Najděte hrabství, která mají nadprůměrný počet případů v jednotlivýc
 
 #### SQL
 ```SQL
-WITH countycrimes AS(SELECT cr.`Crime type`, c.`CTY16CD` AS county_code, c.`CTY16NM` AS county_name, COUNT(*) AS Count FROM crimes AS cr JOIN ward AS w ON (cr.`LSOA code` = w.`LSOA11CD`) JOIN county AS c ON (w.`WD16CD` = c.`WD16CD`) GROUP BY cr.`Crime type`, c.`CTY16CD`, c.`CTY16NM`),
-result AS (SELECT cc.`Crime type`, cc.county_name, cc.Count, p.`Population`, (cc.Count/p.`Population`)*10000 AS crimes_per_10000 FROM countycrimes AS cc JOIN population AS p ON (cc.county_code = p.`Code`) ORDER BY cc.`Crime type`, crimes_per_10000 DESC)
-SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY `Crime type` ORDER BY crimes_per_10000 DESC) AS ROW_NUM FROM result) AS res WHERE res.ROW_NUM < 6;
+WITH countycrimes AS
+  (SELECT cr.`Crime type`, c.`CTY16CD` AS county_code, c.`CTY16NM` AS county_name, COUNT(*) AS COUNT
+   FROM crimes AS cr
+   JOIN ward AS w ON (cr.`LSOA code` = w.`LSOA11CD`)
+   JOIN county AS c ON (w.`WD16CD` = c.`WD16CD`)
+   GROUP BY cr.`Crime type`, c.`CTY16CD`, c.`CTY16NM`),
+                  RESULT AS
+  (SELECT cc.`Crime type`,
+          cc.county_name,
+          cc.Count,
+          p.`Population`,
+          (cc.Count/p.`Population`)*10000 AS crimes_per_10000
+   FROM countycrimes AS cc
+   JOIN population AS p ON (cc.county_code = p.`Code`)
+   ORDER BY cc.`Crime type`,
+            crimes_per_10000 DESC)
+SELECT *
+FROM
+  (SELECT *,
+          ROW_NUMBER() OVER (PARTITION BY `Crime type`
+                             ORDER BY crimes_per_10000 DESC) AS ROW_NUM
+   FROM RESULT) AS res
+WHERE res.ROW_NUM < 6;
 ```
 
 ### TASK 11
@@ -1024,51 +1133,78 @@ Jaký existuje vztah úrovni zločinnosti a brexit preferenci?
 #### SQL
 ##### Podle region
 ```SQL
-WITH regioncrimes AS (
-  SELECT COUNT(crimes.`Crime ID`) AS count, region.`RGN11NM` AS `Region name`, region.`RGN11CD` AS `Region code`
-  FROM crimes
-  JOIN region ON (crimes.`LSOA code` = region.`LSOA11CD`)
-  WHERE crimes.`LSOA code` IS NOT NULL AND crimes.`LSOA code` != ''
-  AND region.`RGN11NM` IS NOT NULL AND region.`RGN11NM` != ''
-  GROUP BY region.`RGN11CD`, region.`RGN11NM`
-  ORDER BY count DESC
-), regionbrexit AS (
-  SELECT brexit.`Region_Code`, SUM(brexit.`Electorate`) AS `Electorate`, SUM(brexit.`Valid_Votes`) AS `Valid_Votes`, SUM(brexit.`Remain`) AS `Remain`, SUM(brexit.`Leave`) AS `Leave`
-  FROM brexit
-  GROUP BY brexit.`Region_Code`
-)
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-SELECT regioncrimes.`count`, regioncrimes.`Region name`, regionbrexit.`Electorate`, regionbrexit.`Valid_Votes`, regionbrexit.`Remain`, regionbrexit.`Leave`, (regioncrimes.`count` / regionbrexit.`Electorate`) as `crimes per person`, (regionbrexit.`Valid_Votes` / regionbrexit.`Electorate`) as pct_voted, (regionbrexit.`Remain` / regionbrexit.`Valid_Votes`) as pct_remain, (regionbrexit.`Leave` / regionbrexit.`Valid_Votes`) as pct_leave
+WITH regioncrimes AS
+  (SELECT COUNT(crimes.`Crime ID`) AS COUNT,
+          region.`RGN11NM` AS `Region name`,
+          region.`RGN11CD` AS `Region code`
+   FROM crimes
+   JOIN region ON (crimes.`LSOA code` = region.`LSOA11CD`)
+   WHERE crimes.`LSOA code` IS NOT NULL
+     AND crimes.`LSOA code` != ''
+     AND region.`RGN11NM` IS NOT NULL
+     AND region.`RGN11NM` != ''
+   GROUP BY region.`RGN11CD`,
+            region.`RGN11NM`
+   ORDER BY COUNT DESC),
+     regionbrexit AS
+  (SELECT brexit.`Region_Code`,
+          SUM(brexit.`Electorate`) AS `Electorate`,
+          SUM(brexit.`Valid_Votes`) AS `Valid_Votes`,
+          SUM(brexit.`Remain`) AS `Remain`,
+          SUM(brexit.`Leave`) AS `Leave`
+   FROM brexit
+   GROUP BY brexit.`Region_Code`)
+SELECT regioncrimes.`count`,
+       regioncrimes.`Region name`,
+       regionbrexit.`Electorate`,
+       regionbrexit.`Valid_Votes`,
+       regionbrexit.`Remain`,
+       regionbrexit.`Leave`,
+       (regioncrimes.`count` / regionbrexit.`Electorate`) AS `crimes per person`,
+       (regionbrexit.`Valid_Votes` / regionbrexit.`Electorate`) AS pct_voted,
+       (regionbrexit.`Remain` / regionbrexit.`Valid_Votes`) AS pct_remain,
+       (regionbrexit.`Leave` / regionbrexit.`Valid_Votes`) AS pct_leave
 FROM regionbrexit
 JOIN regioncrimes ON (regionbrexit.`Region_Code` = regioncrimes.`Region code`)
 WHERE regioncrimes.count > 0
-AND regioncrimes.`Region name` IS NOT NULL AND regioncrimes.`Region name` != ''
-ORDER BY regionbrexit.`Electorate` DESC, regioncrimes.`count` DESC;
+  AND regioncrimes.`Region name` IS NOT NULL
+  AND regioncrimes.`Region name` != ''
+ORDER BY regionbrexit.`Electorate` DESC,
+         regioncrimes.`count` DESC;
 ```
 ##### Podle area
 ```SQL
-WITH countycrimes AS (
-  SELECT c.`LAD16CD` AS area_code, c.`LAD16NM` AS area_name, COUNT(cr.`Crime ID`) AS count
-  FROM crimes AS cr
-  JOIN ward AS w
-  ON (cr.`LSOA code` = w.`LSOA11CD`)
-  JOIN county AS c
-  ON (w.`WD16CD` = c.`WD16CD`)
-  GROUP BY c.`LAD16CD`, c.`LAD16NM`
-), countybrexit AS (
-  SELECT brexit.`Area_Code`, SUM(brexit.`Electorate`) AS `Electorate`, SUM(brexit.`Valid_Votes`) AS `Valid_Votes`, SUM(brexit.`Remain`) AS `Remain`, SUM(brexit.`Leave`) AS `Leave`
-  FROM brexit
-  GROUP BY brexit.`Area_Code`
-)
-INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\;'
-SELECT countycrimes.count, countycrimes.area_name AS `Area_name`, countybrexit.`Electorate`, countybrexit.`Valid_Votes`, countybrexit.`Remain`, countybrexit.`Leave`, (countycrimes.`count` / countybrexit.`Electorate`) as `crimes per person`, (countybrexit.`Valid_Votes` / countybrexit.`Electorate`) as pct_voted, (countybrexit.`Remain` / countybrexit.`Valid_Votes`) as pct_remain, (countybrexit.`Leave` / countybrexit.`Valid_Votes`) as pct_leave
+WITH countycrimes AS
+  (SELECT c.`LAD16CD` AS area_code,
+          c.`LAD16NM` AS area_name,
+          COUNT(cr.`Crime ID`) AS COUNT
+   FROM crimes AS cr
+   JOIN ward AS w ON (cr.`LSOA code` = w.`LSOA11CD`)
+   JOIN county AS c ON (w.`WD16CD` = c.`WD16CD`)
+   GROUP BY c.`LAD16CD`,
+            c.`LAD16NM`),
+     countybrexit AS
+  (SELECT brexit.`Area_Code`,
+          SUM(brexit.`Electorate`) AS `Electorate`,
+          SUM(brexit.`Valid_Votes`) AS `Valid_Votes`,
+          SUM(brexit.`Remain`) AS `Remain`,
+          SUM(brexit.`Leave`) AS `Leave`
+   FROM brexit
+   GROUP BY brexit.`Area_Code`)
+SELECT countycrimes.count,
+       countycrimes.area_name AS `Area_name`,
+       countybrexit.`Electorate`,
+       countybrexit.`Valid_Votes`,
+       countybrexit.`Remain`,
+       countybrexit.`Leave`,
+       (countycrimes.`count` / countybrexit.`Electorate`) AS `crimes per person`,
+       (countybrexit.`Valid_Votes` / countybrexit.`Electorate`) AS pct_voted,
+       (countybrexit.`Remain` / countybrexit.`Valid_Votes`) AS pct_remain,
+       (countybrexit.`Leave` / countybrexit.`Valid_Votes`) AS pct_leave
 FROM countybrexit
 JOIN countycrimes ON (countybrexit.`Area_Code` = countycrimes.`area_code`)
-ORDER BY countybrexit.`Electorate` DESC, countycrimes.`count` DESC;
+ORDER BY countybrexit.`Electorate` DESC,
+         countycrimes.`count` DESC;
 ```
 
 ## Závěr
