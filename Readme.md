@@ -4,6 +4,8 @@
 * [Úvod](#úvod)
 * [Data](#data)
 * [Technologie](#technologie)
+  * [Dočasné tabulky](#dočasné-tabulky)
+  * [Finální tabulky](#dočasné-tabulky)
 * [Úkoly](#úkoly)
   * [Task 1](#task-1)
   * [Task 2](#task-2)
@@ -671,7 +673,7 @@ DROP TABLE stopandsearch_tmp;
 #### Zadání
 Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářství, …)?
 
-#### Informace
+#### Komentář
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=275794259&amp;single=true&amp;widget=false&amp;headers=false&amp;range=A1:B15"></iframe>
@@ -688,32 +690,68 @@ SELECT `Crime type`, COUNT(`Crime type`) as Count FROM crimes GROUP BY `Crime ty
 #### Zadání
 Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
 
-#### Informace
+#### Komentář
+
+#### Výsledná data
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1305914394&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:B11"></iframe>
+
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=879348330&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:C11"></iframe>
+
+#### SQL
+
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT * FROM (SELECT `LSOA name`, COUNT(`LSOA name`) as count FROM crimes WHERE `LSOA name` IS NOT NULL AND `LSOA name` != '' GROUP BY `LSOA name`) as res ORDER BY res.count DESC LIMIT 10;
+
+```
+
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT * FROM (SELECT `LSOA name`, `Crime type`, COUNT(*) as count FROM 
+crimes WHERE `LSOA name` IS NOT NULL AND `LSOA Name` != '' GROUP BY `LSOA name`, `Crime type`) as res ORDER BY res.count DESC LIMIT 10;
+```
 
 ### TASK 3
 #### Zadání
-#### Informace
+Jak se vyvíjejí časově počty evidovaných případů?
+
+#### Komentář
+
 #### Výsledná data
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=531591978&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:B37"></iframe>
+
 #### Vizualizace výsledku
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=676107843&amp;format=interactive"></iframe>
+
 #### SQL
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT `Month`, COUNT(`Crime ID`) AS Count FROM crimes GROUP BY `MONTH` ORDER BY `Month` ASC;
+```
 
 ### TASK 4
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
 
 ### TASK 5
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
 
 ### TASK 6
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
@@ -722,7 +760,7 @@ Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)
 #### Zadání
 Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu longitude vs. latitude) vyřešené a nevyřešené případy.
 
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
@@ -766,7 +804,7 @@ FROM allinfo;
 
 ### TASK 8
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
@@ -774,7 +812,7 @@ FROM allinfo;
 ### TASK 9
 #### Zadání
 Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
@@ -797,14 +835,14 @@ ORDER BY crimes.`Month` ASC, count DESC;
 
 ### TASK 10
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
 
 ### TASK 11
 #### Zadání
-#### Informace
+#### Komentář
 #### Výsledná data
 #### Vizualizace výsledku
 #### SQL
