@@ -829,9 +829,12 @@ LIMIT 1;
 
 ```SQL
 WITH allinfo AS
-  (SELECT `Crime type`, `Reported by`, COUNT(*) AS COUNT
+  (SELECT `Crime type`,
+          `Reported by`,
+          COUNT(*) AS COUNT
    FROM crimes
-   GROUP BY `Crime type`, `Reported by`)
+   GROUP BY `Crime type`,
+            `Reported by`)
 SELECT res.`Crime type`,
        res.`Reported by`,
        res.Count
@@ -880,6 +883,11 @@ Nejprve pomocí prvního dotazu zjistíme kategorii vyřešení případů, kter
 
 Druhým dotazem poté získáme podíl takových případů v jednotlivých kategoriích.
 
+#### Závěr
+Nenalezení podezřelého odpovídá kategorie vyřešení *Investigation complete; no suspect identified*.
+
+Nejmenší podíl případů, kde nebyl nalezen podezřelý je v kategorii drogových případů (*Drugs*), a to 5,31%. Naopak největší podíl takových případů je v kategorii krádeže kola (*Bicycle theft*), a to 91,03%. 
+
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1510689825&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:A24"></iframe>
 
@@ -895,29 +903,34 @@ FROM outcomes;
 ```
 
 ```SQL
-WITH outcomesunique as
+WITH outcomesunique AS
   (SELECT *
    FROM
-     (SELECT *, ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
-                                   ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
+     (SELECT *,
+             ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
+                                ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
       FROM outcomes) AS res
    WHERE res.ROW_NUM = 1),
-                    allinfo as
-  (SELECT crimes.`Crime ID`, crimes.`Crime type`, outcomesunique.`Outcome type`
+     allinfo AS
+  (SELECT crimes.`Crime ID`,
+          crimes.`Crime type`,
+          outcomesunique.`Outcome type`
    FROM crimes
    JOIN outcomesunique ON (crimes.`Crime ID` = outcomesunique.`Crime ID`)),
-                            allcrimes as
+     allcrimes AS
   (SELECT *
    FROM
-     (SELECT `Crime type`, COUNT(`Crime type`) AS COUNT
+     (SELECT `Crime type`,
+             COUNT(`Crime type`) AS COUNT
       FROM allinfo
       WHERE `Crime type` IS NOT NULL
         AND `Crime type` != ''
       GROUP BY `Crime type`) AS res),
-                                      nosuspectcrimes as
+     nosuspectcrimes AS
   (SELECT *
    FROM
-     (SELECT `Crime type`, COUNT(`Crime type`) AS COUNT
+     (SELECT `Crime type`,
+             COUNT(`Crime type`) AS COUNT
       FROM allinfo
       WHERE `Crime type` IS NOT NULL
         AND `Crime type` != ''
@@ -943,6 +956,10 @@ Odkaz na data ve formátu csv: [t4_1.csv](data/t4_2.csv)
 Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
 
 #### Komentář
+Dotaz vede k získání průměrného času vyřešení případu v jednotlivých kategoriích.
+
+#### Závěr
+Nejkratší dobu trvá vyřešení případu krádeže kola (*Bicycle theft*), průměrná doba je 18 dní. Naopak nejdéle trvá vyšetření loupeží (*Robbery*), v této kategorii je průměrná doba 64,5 dní.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=552744617&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B14"></iframe>
@@ -952,15 +969,18 @@ Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
 
 #### SQL
 ```SQL
-WITH outcomesunique as
+WITH outcomesunique AS
   (SELECT *
    FROM
-     (SELECT *, ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
-                                   ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
+     (SELECT *,
+             ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID`
+                                ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`, 'yyyy-MM'))) DESC) AS ROW_NUM
       FROM outcomes) AS res
    WHERE res.ROW_NUM = 1),
-                    crimeProcedure as
-  (SELECT crimes.`Crime type`, outcomesunique.`Month` AS end_date, crimes.`Month` AS start_date
+     crimeProcedure AS
+  (SELECT crimes.`Crime type`,
+          outcomesunique.`Month` AS end_date,
+          crimes.`Month` AS start_date
    FROM outcomesunique
    JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
 SELECT crimeProcedure.`Crime type` AS `Crime type`,
@@ -978,6 +998,10 @@ Odkaz na data ve formátu csv: [t5.csv](data/t5.csv)
 Která oddělení jsou v uzavírání případů nejrychlejší?
 
 #### Komentář
+Dotaz vede k získání dvaceti nejlepších oddělení z pohledu průměrného času na vyřešení případu.
+
+#### Závěr
+Nejkratší průměrnou dobu na vyřešení případu má oddělení **Lancashire Constabulary**, a to 18,84 dní.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=411307535&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B21"></iframe>
@@ -1020,6 +1044,7 @@ Vizualizace zaznamenaných kriminalit typu **"Possession of weapons"** v měsíc
 * Červený marker je nevyřešený případ
 
 #### Výsledná data
+Data jsou příliš rozsáhlá pro náhledové zveřejnění, lze je ovšem stáhnout jako CSV soubor: [t7.csv](data/t7.csv)
 
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
@@ -1154,6 +1179,7 @@ Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíj�
 Vizualizujeme počet kriminalit na region napříč měsíci roku 2017. Ovládání zprostředkovává tahátko v levém dolním rohu.
 
 #### Výsledná data
+Data jsou příliš rozsáhlá pro náhledové zveřejnění, lze je ovšem stáhnout jako CSV soubor: [t9.csv](data/t9.csv)
 
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
