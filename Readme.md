@@ -92,9 +92,7 @@ Odkaz na data: [Data](https://www.electoralcommission.org.uk/__data/assets/file/
 ### Data o populaci
 Pro vypracování některých úkolů bylo potřeba použít data o populaci.
 
-Odkaz na data: [Data](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
-
-Záložka MID-2017
+Odkaz na data: [Data](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland) (záložka MID-2017)
 
 ### Číselníky oblastí
 Pro vypracování některých úkolů bylo potřeba použít převodních číselníků mezi různým územním uspořádáním. 
