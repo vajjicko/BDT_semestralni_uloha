@@ -864,6 +864,11 @@ LEFT JOIN nosuspectcrimes ON (allcrimes.`Crime type` = nosuspectcrimes.`Crime ty
 ORDER BY Ratio;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t4_1.csv](data/t4_1.csv)
+
+Odkaz na data ve formátu csv: [t4_1.csv](data/t4_2.csv)
+
 ### TASK 5
 #### Zadání
 Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
@@ -895,6 +900,9 @@ FROM crimeProcedure
 GROUP BY crimeProcedure.`Crime type`
 ORDER BY `Average solve time`;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t5.csv](data/t5.csv)
 
 ### TASK 6
 #### Zadání
@@ -928,6 +936,9 @@ GROUP BY crimeProcedure.`Reported by`
 ORDER BY `Average solve time`
 LIMIT 20;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t6.csv](data/t6.csv)
 
 ### TASK 7
 #### Zadání
@@ -1055,6 +1066,13 @@ ORDER BY `Type`,
          MONTH;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t8_1.csv](data/t8_1.csv)
+
+Odkaz na data ve formátu csv: [t8_2.csv](data/t8_2.csv)
+
+Odkaz na data ve formátu csv: [t8_3.csv](data/t8_3.csv)
+
 ### TASK 9
 #### Zadání
 Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
@@ -1123,6 +1141,9 @@ FROM
    FROM RESULT) AS res
 WHERE res.ROW_NUM < 6;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t10.csv](data/t10.csv)
 
 ### TASK 11
 #### Zadání
