@@ -24,6 +24,26 @@
 
 ## Data
 
+### Policejní data
+Odkaz na data: [Data](https://data.police.uk/data/)
+
+
+### Data o Brexitu
+Odkaz na data: [Data](https://www.electoralcommission.org.uk/__data/assets/file/0014/212135/EU-referendum-result-data.csv)
+
+### Data o populaci
+Odkaz na data: [Data](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
+
+Záložka MID-2017
+
+### Číselníky oblastí
+#### LSOA to Ward
+Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2016-lookup-in-england-and-wales)
+
+#### Ward to county
+Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
+
+
 ## Technologie
 
 ### Dočasné tabulky
