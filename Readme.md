@@ -24,24 +24,33 @@
 ## Úvod
 
 ## Data
+V rámci semestrální práce byla analyzována volně dostupná data o zločinnosti a and policii v Anglii, Walesu a Severním Irsku v období od října 2015 do září 2018 včetně.
+
+Dále byla analyzována spojitost mezi mírou kriminality a preferencemi v referendu o Brexitu.
 
 ### Policejní data
+Policejní data obsahují informaci o zločinech (crimes), výsledcích vyšetřování (outcomes) a prohlídkách (stop and search).
+
 Odkaz na data: [Data](https://data.police.uk/data/)
 
 ### Data o Brexitu
+Data obsahují informace o výsledcích referenda o Brexitu na úrovni *Area*.
+
 Odkaz na data: [Data](https://www.electoralcommission.org.uk/__data/assets/file/0014/212135/EU-referendum-result-data.csv)
 
 ### Data o populaci
+Pro vypracování některých úkolů bylo potřeba použít data o populaci.
+
 Odkaz na data: [Data](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
 
 Záložka MID-2017
 
 ### Číselníky oblastí
-#### LSOA to Ward
-Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2016-lookup-in-england-and-wales)
+Pro vypracování některých úkolů bylo potřeba použít převodních číselníků mezi různým územním uspořádáním. 
 
-#### Ward to county
-Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
+**LSOA to Ward**: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2016-lookup-in-england-and-wales)
+
+**Ward to county**: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
 
 ## Technologie
 V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT - Hadoop od MetaCentrum - s Apache Hive.
