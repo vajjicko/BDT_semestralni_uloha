@@ -1210,7 +1210,13 @@ Odkaz na data ve formátu csv: [t9.csv](data/t9.csv)
 #### Zadání
 Najděte hrabství, která mají nadprůměrný počet případů v jednotlivých kategoriích per 10 000 obyvatel.
 
+U tohoto úkolu bylo potřeba využít tabulku s daty o populaci a číselníkové tabulky pro mapování územních celků.
+
 #### Komentář
+Dotaz vede k získání pěti hrabství v každé kategorii zločinu, kde je nejvyšší počet případů na 10 000 obyvatel.
+
+#### Závěr
+Z výsledků dotazu získáváme požadované statistiky.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=437604625&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:F71"></iframe>
