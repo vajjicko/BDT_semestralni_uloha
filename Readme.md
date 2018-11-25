@@ -74,6 +74,7 @@
 * [Závěr](#závěr)
 
 ## Úvod
+Cílem této práce je zpracovat data o kriminalitě ze Spojeného královstí a vypracovat 11 úkolů. Ke zpracování jsme využili technologie Hive, nám přistupné na MetaCentrum: hador.ics.muni.cz. K dotazování jsme využili jazyka SQL. Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 
 ## Data
 V rámci semestrální práce byla analyzována volně dostupná data o zločinnosti a and policii v Anglii, Walesu a Severním Irsku v období od října 2015 do září 2018 včetně.
@@ -1356,3 +1357,4 @@ Odkaz na data ve formátu csv: [t11_area.csv](data/t11_area.csv)
 Odkaz na data ve formátu csv: [t11_area_crime_type.csv](data/t11_area_crime_type.csv)
 
 ## Závěr
+Byla provedena analýza dat a vypracováno všech 11 úkolů. K jednotlivým úkolům byly poskytnuty odpovědi, dílčí analýzy, vizualizace a užité SQL dotazy.
