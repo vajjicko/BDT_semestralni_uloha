@@ -27,19 +27,19 @@
 
 ![Vojtěch Gintner - foto](./assets/profile_pictures/gintnvoj.jpeg "Vojtěch Gintner - foto")
 
-* Více jak 7 let zkušeností s návrhem a vývojem webových i mobilních aplikací.
-* Absolvent bakalářského studia na ČVUT v oboru Web a Multimedia.
-* Studentem ČVUT v magisterském oboru návrhu a testování uživatelských prostředí.
-* Rozsáhlé zkušenosti s webovými technologiemi, zejména pak JavaScript.
-* Pracovní zkušenosti zahrnují práci ve startupech a středně velkých firmách zahraničních i tuzemských.
-* Pracovní pozice:
+* více jak 7 let zkušeností s návrhem a vývojem webových i mobilních aplikací.
+* absolvent bakalářského studia na ČVUT v oboru Web a Multimedia.
+* studentem ČVUT v magisterském oboru návrhu a testování uživatelských prostředí
+* rozsáhlé zkušenosti s webovými technologiemi, zejména pak JavaScript.
+* pracovní zkušenosti zahrnují práci ve startupech a středně velkých firmách zahraničních i tuzemských.
+* pracovní pozice:
   * FrontEnd Coder
   * FrontEnd Developer
   * JavaScript Developer
   * UI Designer
   * UX Designer
-* Akademická práce na výzkumu v oblasti User Experience zrakově postižených uživatelů, vývoj outdoorové navigační aplikace pro zrakově postižené
-* Několik veřejných tuzemských i zahraničních přednášek na téma User Experience a User research
+* akademická práce na výzkumu v oblasti User Experience zrakově postižených uživatelů, vývoj outdoorové navigační aplikace pro zrakově postižené
+* několik veřejných tuzemských i zahraničních přednášek na téma User Experience a User research
 
 ## Václav Pavlovec
 <pavlova1@fel.cvut.cz>
@@ -48,8 +48,8 @@
 
 * absolvent bakalářského studia ČVUT FEL (summa cum laude), program Softwarové technologie a management, obor Web a multimédia
 * student magisterského programu ČVUT FEL, program Otevřená informatika, obor HCI (Human-Computer Interaction)
-* Zkušenost s návrhem a prací s DB (Oracle)
-* Zkušenosti s finančním risk managementem
+* zkušenost s návrhem a prací s DB (Oracle)
+* zkušenosti s finančním risk managementem
 
 ## Obsah
 * [Úvod](#úvod)
