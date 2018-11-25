@@ -705,6 +705,9 @@ Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářst
 SELECT `Crime type`, COUNT(`Crime type`) as Count FROM crimes GROUP BY `Crime type` ORDER BY Count DESC;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t1.csv](data/t1.csv)
+
 ### TASK 2
 #### Zadání
 Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
@@ -734,6 +737,10 @@ SELECT * FROM (SELECT `LSOA name`, `Crime type`, COUNT(*) as count FROM
 crimes WHERE `LSOA name` IS NOT NULL AND `LSOA Name` != '' GROUP BY `LSOA name`, `Crime type`) as res ORDER BY res.count DESC LIMIT 10;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t2_1.csv](data/t2_1.csv)
+Odkaz na data ve formátu csv: [t2_2.csv](data/t2_2.csv)
+
 ### TASK 3
 #### Zadání
 Jak se vyvíjejí časově počty evidovaných případů?
@@ -753,6 +760,9 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 SELECT `Month`, COUNT(`Crime ID`) AS Count FROM crimes GROUP BY `MONTH` ORDER BY `Month` ASC;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t3.csv](data/t3.csv)
 
 ### TASK 4
 #### Zadání
@@ -875,6 +885,9 @@ SELECT lat, lng, resolved
 FROM allinfo;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t7.csv](data/t7.csv)
+
 ### TASK 8
 #### Zadání
 Stop and Search data: Popište rozdělení času prohlídky (například pomocí histogramu).
@@ -968,6 +981,9 @@ AND crimes.`Month` <= '2017-12'
 GROUP BY crimes.`Month`, region.`RGN11CD`, region.`RGN11NM`
 ORDER BY crimes.`Month` ASC, count DESC;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t9.csv](data/t9.csv)
 
 ### TASK 10
 #### Zadání
@@ -1070,5 +1086,10 @@ FROM countybrexit
 JOIN countycrimes ON (countybrexit.`Area_Code` = countycrimes.`area_code`)
 ORDER BY countybrexit.`Electorate` DESC, countycrimes.`count` DESC;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t11_region.csv](data/t11_region.csv)
+Odkaz na data ve formátu csv: [t11_area.csv](data/t11_area.csv)
+Odkaz na data ve formátu csv: [t11_area_crime_type.csv](data/t11_area_crime_type.csv)
 
 ## Závěr
