@@ -1260,7 +1260,7 @@ Jaký existuje vztah úrovni zločinnosti a brexit preferenci?
 Z tabulky brexit jsme vyextrahovali volební preference, velikost electorátu a % voličů pro regiony a oblasti. Z tabulky crimes poté díky JOINům s tabulkou ward počty zločinů pro jednotlivé regiony a oblasti.
 
 ##### Metodika
-Data jsou spojitá X spojitá, volíme tedy lineární regresi jako náš nástroj testování nulové hypotézy.
+Data jsou spojitá nba obou osách, volíme tedy lineární regresi jako náš nástroj testování nulové hypotézy.
 
 ##### Nulová hypotéza H0
 Neexistuje žádný vztah mezi počtem kriminalit v oblasti nebo regionu a % voličů či volební preferencí pro odchod z EU
