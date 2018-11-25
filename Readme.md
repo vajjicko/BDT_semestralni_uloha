@@ -27,11 +27,11 @@
 
 ![Vojtěch Gintner - foto](./assets/profile_pictures/gintnvoj.jpeg "Vojtěch Gintner - foto")
 
-* více jak 7 let zkušeností s návrhem a vývojem webových i mobilních aplikací.
+* více jak 7 let zkušeností s návrhem a vývojem webových i mobilních aplikací
 * absolvent bakalářského studia na ČVUT v oboru Web a Multimedia.
 * studentem ČVUT v magisterském oboru návrhu a testování uživatelských prostředí
-* rozsáhlé zkušenosti s webovými technologiemi, zejména pak JavaScript.
-* pracovní zkušenosti zahrnují práci ve startupech a středně velkých firmách zahraničních i tuzemských.
+* rozsáhlé zkušenosti s webovými technologiemi, zejména pak JavaScript
+* pracovní zkušenosti zahrnují práci ve startupech a středně velkých firmách zahraničních i tuzemských
 * pracovní pozice:
   * FrontEnd Coder
   * FrontEnd Developer
