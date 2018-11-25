@@ -74,7 +74,7 @@
 * [Závěr](#závěr)
 
 ## Úvod
-Cílem této práce je zpracovat data o kriminalitě ze Spojeného královstí a vypracovat 11 úkolů. Ke zpracování jsme využili technologie Hive, nám přistupné na MetaCentrum: hador.ics.muni.cz. K dotazování jsme využili jazyka SQL. Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
+Cílem této práce je zpracovat data o kriminalitě ze Spojeného královstí a vypracovat 11 úkolů. Ke zpracování jsme využili technologie Hive, nám přistupné na MetaCentrum: hador.ics.muni.cz. K dotazování jsme využili jazyka HiveQL. Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 
 ## Data
 V rámci semestrální práce byla analyzována volně dostupná data o zločinnosti a and policii v Anglii, Walesu a Severním Irsku v období od října 2015 do září 2018 včetně.
@@ -106,8 +106,24 @@ Pro vypracování některých úkolů bylo potřeba použít převodních číse
 ## Technologie
 V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT (Hadoop od MetaCentrum) s Apache Hive.
 
+Na serveru *hador* byla vytvořena následující struktura, která byla naplněna daty:
+```
+dataPolice/
+* brexit
+* county
+* crimes
+* outcomes
+* population
+* region
+* stopandsearch
+* ward
+```
+
+Tato datová stuktura byla přenesena i na HDFS, kde byla využita k naplnění dočasných tabulek.
+
+Dočasné i finální tabulky byly vytvářeny v databázi **bilekpe5**.
+
 ### Dočasné tabulky
-Tabulky byly vytvářeny v databázi **bilekpe5**.
 
 ##### region_tmp
 
@@ -529,6 +545,10 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 ### Finální tabulky
 Tabulky byly vytvářeny v databázi **bilekpe5**.
 
+
+Pro finální tabulky byl zvolen **ORC** formát s kompresním algoritmem **Snappy** z důvodu častého přístupu k datům.
+
+
 Před importem dat do finálních tabulek z tabulek dočasných bylo potřeba zapnout dynamický mód partition bez restrikcí:
 ```SQL
 set hive.exec.dynamic.partition.mode=nonstrict;
@@ -764,11 +784,12 @@ Výsledky dotazů byly ukládány do souborů, ze kterých bylo následně sesta
 
 Do všech dotazů byl přidán následující kus kódu, který zajistil generování výsledků do souborů.
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results/resultT*'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
 ```
 
+Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 ## Úkoly
 
 ### TASK 1
@@ -1318,11 +1339,11 @@ Síla testu zachována, outlieři oříznuti (346 zbývajících samplů).
 ##### Podle area s oříznutím outliers
 <iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1614621435&amp;format=interactive"></iframe>
 
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=804484930&amp;format=interactive"></iframe>
+
 <iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=523033051&amp;format=interactive"></iframe>
 
 <iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1895231909&amp;format=interactive"></iframe>
-
-<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=804484930&amp;format=interactive"></iframe>
 
 #### SQL
 ##### Podle region
