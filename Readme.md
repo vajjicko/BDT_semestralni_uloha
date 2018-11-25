@@ -57,7 +57,7 @@
 * [Technologie](#technologie)
   * [Dočasné tabulky](#dočasné-tabulky)
   * [Finální tabulky](#dočasné-tabulky)
-  * [Výsledky dotazů](#výsledky-dotazů)
+  * [Dotazování a výsledky dotazů](#dotazování-a-výsledky-dotazů)
 * [Úkoly](#úkoly)
   * [Task 1](#task-1)
   * [Task 2](#task-2)
@@ -75,28 +75,39 @@
 ## Úvod
 
 ## Data
+V rámci semestrální práce byla analyzována volně dostupná data o zločinnosti a and policii v Anglii, Walesu a Severním Irsku v období od října 2015 do září 2018 včetně.
+
+Dále byla analyzována spojitost mezi mírou kriminality a preferencemi v referendu o Brexitu.
 
 ### Policejní data
+Policejní data obsahují informaci o zločinech (crimes), výsledcích vyšetřování (outcomes) a prohlídkách (stop and search).
+
 Odkaz na data: [Data](https://data.police.uk/data/)
 
 ### Data o Brexitu
+Data obsahují informace o výsledcích referenda o Brexitu na úrovni *Area*.
+
 Odkaz na data: [Data](https://www.electoralcommission.org.uk/__data/assets/file/0014/212135/EU-referendum-result-data.csv)
 
 ### Data o populaci
+Pro vypracování některých úkolů bylo potřeba použít data o populaci.
+
 Odkaz na data: [Data](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
 
 Záložka MID-2017
 
 ### Číselníky oblastí
-#### LSOA to Ward
-Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2016-lookup-in-england-and-wales)
+Pro vypracování některých úkolů bylo potřeba použít převodních číselníků mezi různým územním uspořádáním. 
 
-#### Ward to county
-Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
+**LSOA to Ward**: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2016-lookup-in-england-and-wales)
+
+**Ward to county**: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
 
 ## Technologie
+V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT (Hadoop od MetaCentrum) s Apache Hive.
 
 ### Dočasné tabulky
+Tabulky byly vytvářeny v databázi **bilekpe5**.
 
 ##### region_tmp
 
@@ -516,9 +527,10 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 ```
 
 ### Finální tabulky
+Tabulky byly vytvářeny v databázi **bilekpe5**.
 
+Před importem dat do finálních tabulek z tabulek dočasných bylo potřeba zapnout dynamický mód partition bez restrikcí:
 ```SQL
---Zapnuti dynamickeho partition
 set hive.exec.dynamic.partition.mode=nonstrict;
 ```
 
@@ -737,7 +749,17 @@ DROP TABLE outcomes_tmp;
 DROP TABLE stopandsearch_tmp;
 ```
 
-### Výsledky dotazů
+### Dotazování a výsledky dotazů
+Tabulky byly vytvářeny v databázi **bilekpe5**.
+
+Pro přístup k jedné databázi pro všechny uživatele byla potřeba změna práv u uživatelského adresáře.
+
+```
+hdfs dfs -chmod 755 /user/bilekpe5/
+```
+
+Pro dotazování byl použit jazyk **HiveQL**.
+
 Výsledky dotazů byly ukládány do souborů, ze kterých bylo následně sestaveno vždy výsledné CSV pro daný dotaz.
 
 Do všech dotazů byl přidán následující kus kódu, který zajistil generování výsledků do souborů.
@@ -891,6 +913,11 @@ LEFT JOIN nosuspectcrimes ON (allcrimes.`Crime type` = nosuspectcrimes.`Crime ty
 ORDER BY Ratio;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t4_1.csv](data/t4_1.csv)
+
+Odkaz na data ve formátu csv: [t4_1.csv](data/t4_2.csv)
+
 ### TASK 5
 #### Zadání
 Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
@@ -922,6 +949,9 @@ FROM crimeProcedure
 GROUP BY crimeProcedure.`Crime type`
 ORDER BY `Average solve time`;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t5.csv](data/t5.csv)
 
 ### TASK 6
 #### Zadání
@@ -955,6 +985,9 @@ GROUP BY crimeProcedure.`Reported by`
 ORDER BY `Average solve time`
 LIMIT 20;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t6.csv](data/t6.csv)
 
 ### TASK 7
 #### Zadání
@@ -1082,6 +1115,13 @@ ORDER BY `Type`,
          MONTH;
 ```
 
+#### Data v CSV
+Odkaz na data ve formátu csv: [t8_1.csv](data/t8_1.csv)
+
+Odkaz na data ve formátu csv: [t8_2.csv](data/t8_2.csv)
+
+Odkaz na data ve formátu csv: [t8_3.csv](data/t8_3.csv)
+
 ### TASK 9
 #### Zadání
 Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
@@ -1150,6 +1190,9 @@ FROM
    FROM RESULT) AS res
 WHERE res.ROW_NUM < 6;
 ```
+
+#### Data v CSV
+Odkaz na data ve formátu csv: [t10.csv](data/t10.csv)
 
 ### TASK 11
 #### Zadání
