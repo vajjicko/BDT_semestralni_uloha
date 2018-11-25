@@ -446,6 +446,7 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 ### Finální tabulky
 
 ```SQL
+--Zapnuti dynamickeho partition
 set hive.exec.dynamic.partition.mode=nonstrict;
 ```
 
