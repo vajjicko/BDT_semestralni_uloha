@@ -445,6 +445,225 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 
 ### Finální tabulky
 
+```SQL
+set hive.exec.dynamic.partition.mode=nonstrict;
+```
+
+##### region
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS region(
+  `LSOA11CD`  varchar(128),
+  `LSOA11NM`  varchar(128),
+  `BUASD11CD` varchar(128),
+  `BUASD11NM` varchar(128),
+  `BUA11CD`   varchar(128),
+  `BUA11NM`   varchar(128),
+  `LAD11CD`   varchar(128),
+  `LAD11NM`   varchar(128),
+  `LAD11NMW`  varchar(128),
+  `RGN11CD`   varchar(128),
+  `RGN11NM`   varchar(128),
+  `RGN11NMW`  varchar(128),
+  `ObjectId`  int)
+STORED AS ORC
+tblproperties('orc.compress'='SNAPPY');
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE region
+SELECT * FROM region_tmp;
+```
+
+##### ward
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS ward (
+  `LSOA11CD`  varchar(128),
+  `LSOA11NM`  varchar(128),
+  `WD16CD`    varchar(128),
+  `WD16NM`    varchar(128),
+  `LAD16CD`   varchar(128),
+  `LAD16NM`   varchar(128),
+  `FID`       int)
+STORED AS ORC
+tblproperties('orc.compress'='SNAPPY');
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE ward
+SELECT * FROM ward_tmp;
+```
+
+##### county
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS county (
+  `WD16CD`    varchar(128),
+  `WD16NM`    varchar(128),
+  `LAD16CD`   varchar(128),
+  `LAD16NM`   varchar(128),
+  `CTY16CD`   varchar(128),
+  `CTY16NM`   varchar(128),
+  `GOR10CD`   varchar(128),
+  `GOR10NM`   varchar(128),
+  `CTRY16CD`  varchar(128),
+  `CTRY16NM`  varchar(128),
+  `FID`       int)
+STORED AS ORC
+tblproperties('orc.compress'='SNAPPY');
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE county
+SELECT * FROM county_tmp;
+```
+
+#### Datové tabulky
+
+##### population
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS population (
+  `Code`        varchar(128),
+  `Population`  int)
+STORED AS ORC
+tblproperties('orc.compress'='SNAPPY');
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE population
+SELECT * FROM population_tmp;
+```
+
+##### brexit
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS brexit (
+  `id`                      int,
+  `Region_Code`             varchar(64),
+  `Region`                  varchar(64),
+  `Area_Code`               varchar(64),
+  `Area`                    varchar(64),
+  `Electorate`              int,
+  `ExpectedBallots`         int,
+  `VerifiedBallotPapers`    int,
+  `Pct_Turnout`             float,
+  `Votes_Cast`              int,
+  `Valid_Votes`             int,
+  `Remain`                  int,
+  `Leave`                   int,
+  `Rejected_Ballots`        int,
+  `No_official_mark`        int,
+  `Voting_for_both_answers` int,
+  `Writing_or_mark`         int,
+  `Unmarked_or_void`        int,
+  `Pct_Remain`              float,
+  `Pct_Leave`               float,
+  `Pct_Rejected`            float)
+STORED AS ORC
+tblproperties('orc.compress'='SNAPPY');
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE brexit
+SELECT * FROM brexit_tmp;
+```
+
+##### crimes
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS crimes (
+  `Crime ID`              varchar(256),
+  `Month`                 varchar(256),
+  `Reported by`           varchar(256),
+  `Falls within`          varchar(256),
+  `Longitude`             float,
+  `Latitude`              float,
+  `Location`              varchar(256),
+  `LSOA code`             varchar(256),
+  `LSOA name`             varchar(256),
+  `Crime type`            varchar(256),
+  `Last outcome category` varchar(256),
+  `Context`               varchar(256))
+PARTITIONED BY (dt string)
+STORED AS ORC tblproperties
+("orc.compress"="SNAPPY");
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE crimes
+PARTITION (dt)
+SELECT * FROM crimes_tmp;
+```
+
+##### outcomes
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS outcomes (
+  `Crime ID`      varchar(256),
+  `Month`         varchar(256),
+  `Reported by`   varchar(256),
+  `Falls within`  varchar(256),
+  `Longitude`     float,
+  `Latitude`      float,
+  `Location`      varchar(256),
+  `LSOA code`     varchar(256),
+  `LSOA name`     varchar(256),
+  `Outcome type`  varchar(256))
+PARTITIONED BY (dt string)
+STORED AS ORC tblproperties
+("orc.compress"="SNAPPY");
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE outcomes
+PARTITION (dt)
+SELECT * FROM outcomes_tmp;
+```
+
+##### stopandsearch
+
+```SQL
+--Vytvoreni tabulky
+CREATE TABLE IF NOT EXISTS stopandsearch (
+  `Type`                                      varchar(64),
+  `Date`                                      varchar(128),
+  `Part of a policing operation`              varchar(16),
+  `Policing`                                  varchar(256),
+  `Latitude`                                  float,
+  `Longitude`                                 float,
+  `Gender`                                    varchar(32),
+  `Age range`                                 varchar(64),
+  `Self-defined ethnicity`                    varchar(256),
+  `Officer-defined ethnicity`                 varchar(128),
+  `Legislation`                               varchar(256),
+  `Object of search`                          varchar(128),
+  `Outcome`                                   varchar(256),
+  `Outcome linked to object of search`        varchar(16),
+  `Removal of more than just outer clothing`  varchar(16))
+PARTITIONED BY (dt string)
+STORED AS ORC tblproperties
+("orc.compress"="SNAPPY");
+
+--Vlozeni dat z docasne tabulky
+INSERT OVERWRITE TABLE stopandsearch
+PARTITION (dt)
+SELECT * FROM stopandsearch_tmp;
+```
+
+#### Smazání dočasných tabulek
+
+```SQL
+DROP TABLE region_tmp;
+DROP TABLE ward_tmp;
+DROP TABLE county_tmp;
+DROP TABLE population_tmp;
+DROP TABLE crimes_tmp;
+DROP TABLE outcomes_tmp;
+DROP TABLE stopandsearch_tmp;
+```
+
 ## Úkoly
 
 ### TASK 1
