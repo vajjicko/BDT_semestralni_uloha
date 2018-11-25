@@ -1109,6 +1109,14 @@ Odkaz na data ve formátu csv: [t7.csv](data/t7.csv)
 Stop and Search data: Popište rozdělení času prohlídky (například pomocí histogramu).
 
 #### Komentář
+Dotaz vedou k získání dat o časovém rozložení prohlídek během dne/měsíce/roku.
+
+#### Závěr
+Během dne je u všech typů prohlídek (*Stop&Search*) vidět pokles v ranních hodinách.
+
+Během měsíce je vidět pokles u 31.dne, který je způsobený absencí 31.dne v pěti měsících.
+
+Během roku je vidět nizší číslo prohlídek (*Stop&Search*) v září.
 
 #### Výsledná data
 ##### Rozložení během dne
