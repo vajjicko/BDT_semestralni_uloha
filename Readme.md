@@ -1021,7 +1021,7 @@ WITH regioncrimes AS (
 INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-SELECT regioncrimes.`count`, regioncrimes.`Region name`, regionbrexit.`Electorate`, regionbrexit.`Valid_Votes`, regionbrexit.`Remain`, regionbrexit.`Leave`, (regioncrimes.`count` / regionbrexit.`Electorate`) as pct_crimes, (regionbrexit.`Valid_Votes` / regionbrexit.`Electorate`) as pct_voted, (regionbrexit.`Remain` / regionbrexit.`Valid_Votes`) as pct_remain, (regionbrexit.`Leave` / regionbrexit.`Valid_Votes`) as pct_leave
+SELECT regioncrimes.`count`, regioncrimes.`Region name`, regionbrexit.`Electorate`, regionbrexit.`Valid_Votes`, regionbrexit.`Remain`, regionbrexit.`Leave`, (regioncrimes.`count` / regionbrexit.`Electorate`) as `crimes per person`, (regionbrexit.`Valid_Votes` / regionbrexit.`Electorate`) as pct_voted, (regionbrexit.`Remain` / regionbrexit.`Valid_Votes`) as pct_remain, (regionbrexit.`Leave` / regionbrexit.`Valid_Votes`) as pct_leave
 FROM regionbrexit
 JOIN regioncrimes ON (regionbrexit.`Region_Code` = regioncrimes.`Region code`)
 WHERE regioncrimes.count > 0
@@ -1046,7 +1046,7 @@ WITH countycrimes AS (
 INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '\;'
-SELECT countycrimes.count, countycrimes.area_name AS `Area_name`, countybrexit.`Electorate`, countybrexit.`Valid_Votes`, countybrexit.`Remain`, countybrexit.`Leave`, (countycrimes.`count` / countybrexit.`Electorate`) as pct_crimes, (countybrexit.`Valid_Votes` / countybrexit.`Electorate`) as pct_voted, (countybrexit.`Remain` / countybrexit.`Valid_Votes`) as pct_remain, (countybrexit.`Leave` / countybrexit.`Valid_Votes`) as pct_leave
+SELECT countycrimes.count, countycrimes.area_name AS `Area_name`, countybrexit.`Electorate`, countybrexit.`Valid_Votes`, countybrexit.`Remain`, countybrexit.`Leave`, (countycrimes.`count` / countybrexit.`Electorate`) as `crimes per person`, (countybrexit.`Valid_Votes` / countybrexit.`Electorate`) as pct_voted, (countybrexit.`Remain` / countybrexit.`Valid_Votes`) as pct_remain, (countybrexit.`Leave` / countybrexit.`Valid_Votes`) as pct_leave
 FROM countybrexit
 JOIN countycrimes ON (countybrexit.`Area_Code` = countycrimes.`area_code`)
 ORDER BY countybrexit.`Electorate` DESC, countycrimes.`count` DESC;
