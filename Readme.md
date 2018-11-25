@@ -24,6 +24,9 @@
 
 ## Technologie
 
+Dočasné tabulky: https://vajjicko.github.io/BDT_semestralni_uloha/docs/temporary_tables.html
+Finální tabulky: https://vajjicko.github.io/BDT_semestralni_uloha/docs/final_tables.html
+
 ## Úkoly
 
 ### TASK 1
