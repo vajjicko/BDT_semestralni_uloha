@@ -6,7 +6,7 @@
 * [Technologie](#technologie)
   * [Dočasné tabulky](#dočasné-tabulky)
   * [Finální tabulky](#dočasné-tabulky)
-  * [Výsledky dotazů](#výsledky-dotazů)
+  * [Dotazování a výsledky dotazů](#dotazování-a-výsledky-dotazů)
 * [Úkoly](#úkoly)
   * [Task 1](#task-1)
   * [Task 2](#task-2)
@@ -44,8 +44,10 @@ Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/lower-layer-su
 Odkaz na data: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
 
 ## Technologie
+V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT - Hadoop od MetaCentrum - s Apache Hive.
 
 ### Dočasné tabulky
+Tabulky byly vytvářeny v databázi **bilekpe5**.
 
 ##### region_tmp
 
@@ -465,9 +467,10 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 ```
 
 ### Finální tabulky
+Tabulky byly vytvářeny v databázi **bilekpe5**.
 
+Před importem dat do finálních tabulek z tabulek dočasných bylo potřeba zapnout dynamický mód partition bez restrikcí:
 ```SQL
---Zapnuti dynamickeho partition
 set hive.exec.dynamic.partition.mode=nonstrict;
 ```
 
@@ -686,7 +689,17 @@ DROP TABLE outcomes_tmp;
 DROP TABLE stopandsearch_tmp;
 ```
 
-### Výsledky dotazů
+### Dotazování a výsledky dotazů
+Tabulky byly vytvářeny v databázi **bilekpe5**.
+
+Pro přístup k jedné databázi pro všechny uživatele byla potřeba změna práv u uživatelského adresáře.
+
+```
+hdfs dfs -chmod 755 /user/bilekpe5/
+```
+
+Pro dotazování byl použit jazyk **HiveQL**.
+
 Výsledky dotazů byly ukládány do souborů, ze kterých bylo následně sestaveno vždy výsledné CSV pro daný dotaz.
 
 Do všech dotazů byl přidán následující kus kódu, který zajistil generování výsledků do souborů.
