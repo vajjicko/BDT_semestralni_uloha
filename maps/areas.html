@@ -182,7 +182,7 @@ for (var j = 0; j < totalmonths; j++) {
 
 function startInterval() {
   sliderInterval = window.setInterval(function() {
-    slider.value = (Number(slider.value) + 1) % 12
+    slider.value = (Number(slider.value) % 12 + 1)
     val = slider.value
     updateMap(val)
     valspan.innerHTML = num_to_month[val-1]
