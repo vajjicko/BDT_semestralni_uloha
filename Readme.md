@@ -775,6 +775,10 @@ FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
 Kolik případů je evidováno v jednotlivých kategoriích (krádež, žhářství, …)?
 
 #### Komentář
+Dotaz vede k získání počtu případů v jednotlivých kategoriích.
+
+#### Závěr
+Z výsledků vyplývá, že kategorie antisociální chování (*Anti-social behaviour*) a násilí a sexuální delikty (*Violence or sexual offences*) tvoří cca. 50% případů.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=275794259&amp;single=true&amp;widget=false&amp;headers=false&amp;range=A1:B15"></iframe>
@@ -796,40 +800,49 @@ ORDER BY COUNT DESC;
 Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
 
 #### Komentář
+Dotazy vedou k získání útvarů, které evidují nejvíce případů. První dotaz nalezne útvar, který eviduje nejvíce připadů celkově, druhý poté nalezne takový útvar pro každou kategorii zločinu.
+
+#### Závěr
+Z výsledků vyplývá, že nejvíce případů zaznamenalo oddělení **Metropolitan Police Service**.
+
+Z výsledků druhého dotazu získáváme data podle jednotlivých kategorií.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1305914394&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B11"></iframe>
 
-<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=879348330&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C11"></iframe>
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=879348330&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C15"></iframe>
 
 #### SQL
-
 ```SQL
 SELECT *
 FROM
-  (SELECT `LSOA name`,
-          COUNT(`LSOA name`) AS COUNT
+  (SELECT `Reported by`,
+          COUNT(`Reported by`) AS COUNT
    FROM crimes
-   WHERE `LSOA name` IS NOT NULL
-     AND `LSOA name` != ''
-   GROUP BY `LSOA name`) AS res
+   WHERE `Reported by` IS NOT NULL
+     AND `Reported by` != ''
+   GROUP BY `Reported by`) AS res
 ORDER BY res.count DESC
-LIMIT 10;
+LIMIT 1;
 ```
 
 ```SQL
-SELECT *
-FROM
-  (SELECT `LSOA name`,
-          `Crime type`,
-          COUNT(*) AS COUNT
+WITH allinfo AS
+  (SELECT `Crime type`, `Reported by`, COUNT(*) AS COUNT
    FROM crimes
-   WHERE `LSOA name` IS NOT NULL
-     AND `LSOA Name` != ''
-   GROUP BY `LSOA name`,
-            `Crime type`) AS res
-ORDER BY res.count DESC
-LIMIT 10;
+   GROUP BY `Crime type`, `Reported by`)
+SELECT res.`Crime type`,
+       res.`Reported by`,
+       res.Count
+FROM
+  (SELECT `Crime type`,
+          `Reported by`,
+          COUNT,
+          ROW_NUMBER() OVER (PARTITION BY `Crime type`
+                             ORDER BY `Crime type` DESC) AS ROW_NUM
+   FROM allinfo) AS res
+WHERE res.ROW_NUM = 1
+ORDER BY res.`Crime type`;
 ```
 
 ### TASK 3
