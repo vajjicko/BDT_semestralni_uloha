@@ -968,9 +968,88 @@ SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY `Crime type` ORDER BY cr
 
 ### TASK 11
 #### Zadání
+Jaký existuje vztah úrovni zločinnosti a brexit preferenci?
+
 #### Komentář
+
 #### Výsledná data
+##### Podle region
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1527501732&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:J11"></iframe>
+
+##### Podle area
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1197292459&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:J349"></iframe>
+
+##### Podle area s oříznutím outliers
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1239867566&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:J347"></iframe>
+
 #### Vizualizace výsledku
+##### Podle region
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1829606990&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1104927466&amp;format=interactive"></iframe>
+
+##### Podle area
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1771906241&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=39516865&amp;format=interactive"></iframe>
+
+##### Podle area s oříznutím outliers
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1614621435&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=523033051&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1895231909&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=804484930&amp;format=interactive"></iframe>
+
 #### SQL
+##### Podle region
+```SQL
+WITH regioncrimes AS (
+  SELECT COUNT(crimes.`Crime ID`) AS count, region.`RGN11NM` AS `Region name`, region.`RGN11CD` AS `Region code`
+  FROM crimes
+  JOIN region ON (crimes.`LSOA code` = region.`LSOA11CD`)
+  WHERE crimes.`LSOA code` IS NOT NULL AND crimes.`LSOA code` != ''
+  AND region.`RGN11NM` IS NOT NULL AND region.`RGN11NM` != ''
+  GROUP BY region.`RGN11CD`, region.`RGN11NM`
+  ORDER BY count DESC
+), regionbrexit AS (
+  SELECT brexit.`Region_Code`, SUM(brexit.`Electorate`) AS `Electorate`, SUM(brexit.`Valid_Votes`) AS `Valid_Votes`, SUM(brexit.`Remain`) AS `Remain`, SUM(brexit.`Leave`) AS `Leave`
+  FROM brexit
+  GROUP BY brexit.`Region_Code`
+)
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT regioncrimes.`count`, regioncrimes.`Region name`, regionbrexit.`Electorate`, regionbrexit.`Valid_Votes`, regionbrexit.`Remain`, regionbrexit.`Leave`, (regioncrimes.`count` / regionbrexit.`Electorate`) as pct_crimes, (regionbrexit.`Valid_Votes` / regionbrexit.`Electorate`) as pct_voted, (regionbrexit.`Remain` / regionbrexit.`Valid_Votes`) as pct_remain, (regionbrexit.`Leave` / regionbrexit.`Valid_Votes`) as pct_leave
+FROM regionbrexit
+JOIN regioncrimes ON (regionbrexit.`Region_Code` = regioncrimes.`Region code`)
+WHERE regioncrimes.count > 0
+AND regioncrimes.`Region name` IS NOT NULL AND regioncrimes.`Region name` != ''
+ORDER BY regionbrexit.`Electorate` DESC, regioncrimes.`count` DESC;
+```
+##### Podle area
+```SQL
+WITH countycrimes AS (
+  SELECT c.`LAD16CD` AS area_code, c.`LAD16NM` AS area_name, COUNT(cr.`Crime ID`) AS count
+  FROM crimes AS cr
+  JOIN ward AS w
+  ON (cr.`LSOA code` = w.`LSOA11CD`)
+  JOIN county AS c
+  ON (w.`WD16CD` = c.`WD16CD`)
+  GROUP BY c.`LAD16CD`, c.`LAD16NM`
+), countybrexit AS (
+  SELECT brexit.`Area_Code`, SUM(brexit.`Electorate`) AS `Electorate`, SUM(brexit.`Valid_Votes`) AS `Valid_Votes`, SUM(brexit.`Remain`) AS `Remain`, SUM(brexit.`Leave`) AS `Leave`
+  FROM brexit
+  GROUP BY brexit.`Area_Code`
+)
+INSERT OVERWRITE DIRECTORY '/user/vojgin/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\;'
+SELECT countycrimes.count, countycrimes.area_name AS `Area_name`, countybrexit.`Electorate`, countybrexit.`Valid_Votes`, countybrexit.`Remain`, countybrexit.`Leave`, (countycrimes.`count` / countybrexit.`Electorate`) as pct_crimes, (countybrexit.`Valid_Votes` / countybrexit.`Electorate`) as pct_voted, (countybrexit.`Remain` / countybrexit.`Valid_Votes`) as pct_remain, (countybrexit.`Leave` / countybrexit.`Valid_Votes`) as pct_leave
+FROM countybrexit
+JOIN countycrimes ON (countybrexit.`Area_Code` = countycrimes.`area_code`)
+ORDER BY countybrexit.`Electorate` DESC, countycrimes.`count` DESC;
+```
 
 ## Závěr
