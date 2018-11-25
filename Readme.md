@@ -742,7 +742,7 @@ K dispozici jsou i data o výsledcích jednotlivých případů. Jaký je v jedn
 #### Komentář
 
 #### Výsledná data
-<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1510689825&amp;single=true&amp;widget=true&amp;headers=falserange=A1:A24"></iframe>
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1510689825&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:A24"></iframe>
 
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=285903865&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:E14"></iframe>
 
@@ -790,17 +790,32 @@ SELECT crimeProcedure.`Crime type` as `Crime type`, AVG(DATEDIFF(to_date(from_un
 
 ### TASK 6
 #### Zadání
+Která oddělení jsou v uzavírání případů nejrychlejší?
+
 #### Komentář
+
 #### Výsledná data
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=411307535&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B21"></iframe>
+
 #### Vizualizace výsledku
+<iframe height="488" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1728703418&amp;format=interactive"></iframe>
+
 #### SQL
+```SQL
+WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
+crimeProcedure as(SELECT crimes.`Reported by`, outcomesunique.`Month` as end_date, crimes.`Month` as start_date FROM outcomesunique
+JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
+SELECT crimeProcedure.`Reported by`, AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date,'yyyy-MM'))),to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date,'yyyy-MM'))))) AS `Average solve time` FROM crimeProcedure GROUP BY crimeProcedure.`Reported by` ORDER BY `Average solve time` LIMIT 20;
+```
 
 ### TASK 7
 #### Zadání
 Pokuste se pro nějaký typ zločinu zakreslit na mapu (nebo alespoň do grafu longitude vs. latitude) vyřešené a nevyřešené případy.
 
 #### Komentář
+
 #### Výsledná data
+
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/markers.html" ></iframe>
 
@@ -843,16 +858,79 @@ FROM allinfo;
 
 ### TASK 8
 #### Zadání
+Stop and Search data: Popište rozdělení času prohlídky (například pomocí histogramu).
+
 #### Komentář
+
 #### Výsledná data
+##### Rozložení během dne
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=271488695&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C73"></iframe>
+
+##### Rozložení během měsíce
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1916279744&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C94"></iframe>
+
+##### Rozložení během roku
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=806000472&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C37"></iframe>
+
 #### Vizualizace výsledku
+##### Rozložení během dne
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1501420958&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1566109545&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1660664320&amp;format=interactive"></iframe>
+
+##### Rozložení během měsíce
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=670517239&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=618310268&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=1721260187&amp;format=interactive"></iframe>
+
+##### Rozložení během roku
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=626909870&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=371527993&amp;format=interactive"></iframe>
+
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=2058089063&amp;format=interactive"></iframe>
+
 #### SQL
+##### Rozložení během dne
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT * FROM (SELECT `Type`, substr(`Date`, 12, 2) AS hour, COUNT(*) AS count FROM 
+stopandsearch GROUP BY `Type`, substr(`Date`, 12, 2)) AS res ORDER BY `Type`, hour;
+
+```
+
+##### Rozložení během měsíce
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT * FROM (SELECT `Type`, substr(`Date`, 9, 2) AS day, COUNT(*) AS count FROM 
+stopandsearch GROUP BY `Type`, substr(`Date`, 9, 2)) AS res ORDER BY `Type`, day;
+```
+
+##### Rozložení během roku
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT * FROM (SELECT `Type`, substr(`Date`, 6, 2) AS month, COUNT(*) AS count FROM 
+stopandsearch GROUP BY `Type`, substr(`Date`, 6, 2)) AS res ORDER BY `Type`, month;
+```
 
 ### TASK 9
 #### Zadání
 Pro vybranou kategorii vytvořte animovanou vizualizaci na mapě, jak se vyvíjí situace přes rok.
+
 #### Komentář
+
 #### Výsledná data
+
 #### Vizualizace výsledku
 <iframe style="width:100%;min-height:600px;" seamless frameborder="0" scrolling="no" src="https://vajjicko.github.io/BDT_semestralni_uloha/maps/areas.html" ></iframe>
 
@@ -874,10 +952,19 @@ ORDER BY crimes.`Month` ASC, count DESC;
 
 ### TASK 10
 #### Zadání
+Najděte hrabství, která mají nadprůměrný počet případů v jednotlivých kategoriích per 10 000 obyvatel.
+
 #### Komentář
+
 #### Výsledná data
-#### Vizualizace výsledku
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=437604625&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:F71"></iframe>
+
 #### SQL
+```SQL
+WITH countycrimes AS(SELECT cr.`Crime type`, c.`CTY16CD` AS county_code, c.`CTY16NM` AS county_name, COUNT(*) AS Count FROM crimes AS cr JOIN ward AS w ON (cr.`LSOA code` = w.`LSOA11CD`) JOIN county AS c ON (w.`WD16CD` = c.`WD16CD`) GROUP BY cr.`Crime type`, c.`CTY16CD`, c.`CTY16NM`),
+result AS (SELECT cc.`Crime type`, cc.county_name, cc.Count, p.`Population`, (cc.Count/p.`Population`)*10000 AS crimes_per_10000 FROM countycrimes AS cc JOIN population AS p ON (cc.county_code = p.`Code`) ORDER BY cc.`Crime type`, crimes_per_10000 DESC)
+SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY `Crime type` ORDER BY crimes_per_10000 DESC) AS ROW_NUM FROM result) AS res WHERE res.ROW_NUM < 6;
+```
 
 ### TASK 11
 #### Zadání
