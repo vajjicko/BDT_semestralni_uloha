@@ -110,6 +110,7 @@ function updateHeatmap( event ) {
         data[month][region_to_area(d.region)] = d.count
       }
       updateMap(val)
+      startInterval()
       // console.log(data)
     }
   })
@@ -179,11 +180,26 @@ for (var j = 0; j < totalmonths; j++) {
   data.push(d)
 }
 
+function startInterval() {
+  sliderInterval = window.setInterval(function() {
+    slider.value = (Number(slider.value) + 1) % 12
+    val = slider.value
+    updateMap(val)
+    valspan.innerHTML = num_to_month[val-1]
+  }, 1000)
+}
+
+function stopInterval() {
+  window.clearInterval(sliderInterval)
+}
+
 var slider = document.querySelector('#myRange')
+var sliderInterval
 var valspan = document.querySelector('.valspan')
 var val = slider.value
 
 slider.addEventListener('input', function(e) {
+  stopInterval()
   val = e.srcElement.value
   updateMap(val)
   valspan.innerHTML = num_to_month[val-1]
