@@ -6,6 +6,8 @@
 
 [LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
 
+<img src="https://github.com/vajjicko/favicon.ico" width="200">
+
 ![Petr Bílek - foto](./assets/profile_pictures/bilekpe5.jpg "Petr Bílek - foto")
 
 * absolvent bakalářského studia ČVUT FEL, program Softwarové technologie a management, obor Web a multimédia
