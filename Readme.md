@@ -850,6 +850,10 @@ ORDER BY res.`Crime type`;
 Jak se vyvíjejí časově počty evidovaných případů?
 
 #### Komentář
+Dotaz vede k získání celkového počtu případů za jednotlivé měsíce.
+
+#### Závěr
+Měsíční počet případů kolísá mezi 441 241 (únor 2016) a 619 001 (červenec 2017).
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=531591978&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B37"></iframe>
