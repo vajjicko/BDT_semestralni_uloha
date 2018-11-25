@@ -6,7 +6,7 @@
 
 [LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
 
-<img src="https://github.com/vajjicko/assets/profile_pictures/bilekpe5.jpg" width="200">
+<img src="https://github.com/vajjicko//BDT_semestralni_uloha/blob/master/assets/profile_pictures/bilekpe5.jpg" width="200">
 
 ![Petr Bílek - foto](./assets/profile_pictures/bilekpe5.jpg "Petr Bílek - foto")
 
