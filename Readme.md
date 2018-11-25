@@ -121,8 +121,9 @@ dataPolice/
 
 Tato datová stuktura byla přenesena i na HDFS, kde byla využita k naplnění dočasných tabulek.
 
+Dočasné i finální tabulky byly vytvářeny v databázi **bilekpe5**.
+
 ### Dočasné tabulky
-Tabulky byly vytvářeny v databázi **bilekpe5**.
 
 ##### region_tmp
 
@@ -544,6 +545,10 @@ location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
 ### Finální tabulky
 Tabulky byly vytvářeny v databázi **bilekpe5**.
 
+
+Pro finální tabulky byl zvolen **ORC** formát s kompresním algoritmem **Snappy** z důvodu častého přístupu k datům.
+
+
 Před importem dat do finálních tabulek z tabulek dočasných bylo potřeba zapnout dynamický mód partition bez restrikcí:
 ```SQL
 set hive.exec.dynamic.partition.mode=nonstrict;
@@ -783,7 +788,6 @@ INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
 ```
-
 
 Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 ## Úkoly
