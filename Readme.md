@@ -24,9 +24,426 @@
 
 ## Technologie
 
-Dočasné tabulky: [Odkaz](docs/temporary_tables.md)
+### Dočasné tabulky
 
-Finální tabulky: [Odkaz](docs/final_tables.md)
+##### region_tmp
+
+```SQL
+CREATE EXTERNAL TABLE region_tmp (
+  `LSOA11CD`  varchar(128),
+  `LSOA11NM`  varchar(128),
+  `BUASD11CD` varchar(128),
+  `BUASD11NM` varchar(128),
+  `BUA11CD`   varchar(128),
+  `BUA11NM`   varchar(128),
+  `LAD11CD`   varchar(128),
+  `LAD11NM`   varchar(128),
+  `LAD11NMW`  varchar(128),
+  `RGN11CD`   varchar(128),
+  `RGN11NM`   varchar(128),
+  `RGN11NMW`  varchar(128),
+  `ObjectId`  int)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/region"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+##### ward_tmp
+
+```SQL
+CREATE EXTERNAL TABLE ward_tmp (
+  `LSOA11CD`  varchar(128),
+  `LSOA11NM`  varchar(128),
+  `WD16CD`    varchar(128),
+  `WD16NM`    varchar(128),
+  `LAD16CD`   varchar(128),
+  `LAD16NM`   varchar(128),
+  `FID`       int)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/ward"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+##### county_tmp
+
+```SQL
+CREATE EXTERNAL TABLE county_tmp (
+  `WD16CD`    varchar(128),
+  `WD16NM`    varchar(128),
+  `LAD16CD`   varchar(128),
+  `LAD16NM`   varchar(128),
+  `CTY16CD`   varchar(128),
+  `CTY16NM`   varchar(128),
+  `GOR10CD`   varchar(128),
+  `GOR10NM`   varchar(128),
+  `CTRY16CD`  varchar(128),
+  `CTRY16NM`  varchar(128),
+  `FID`       int)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/county"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+#### Datové tabulky
+
+##### population_tmp
+
+```SQL
+CREATE EXTERNAL TABLE population_tmp (
+  `Code`        varchar(128),
+  `Population`  int)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/population"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+##### brexit_tmp
+
+```SQL
+CREATE EXTERNAL TABLE brexit_tmp (
+  `id`                      int,
+  `Region_Code`             varchar(64),
+  `Region`                  varchar(64),
+  `Area_Code`               varchar(64),
+  `Area`                    varchar(64),
+  `Electorate`              int,
+  `ExpectedBallots`         int,
+  `VerifiedBallotPapers`    int,
+  `Pct_Turnout`             float,
+  `Votes_Cast`              int,
+  `Valid_Votes`             int,
+  `Remain`                  int,
+  `Leave`                   int,
+  `Rejected_Ballots`        int,
+  `No_official_mark`        int,
+  `Voting_for_both_answers` int,
+  `Writing_or_mark`         int,
+  `Unmarked_or_void`        int,
+  `Pct_Remain`              float,
+  `Pct_Leave`               float,
+  `Pct_Rejected`            float)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/brexit"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+##### crimes_tmp
+
+```SQL
+CREATE EXTERNAL TABLE crimes_tmp (
+  `Crime ID`              varchar(256),
+  `Month`                 varchar(256),
+  `Reported by`           varchar(256),
+  `Falls within`          varchar(256),
+  `Longitude`             float,
+  `Latitude`              float,
+  `Location`              varchar(256),
+  `LSOA code`             varchar(256),
+  `LSOA name`             varchar(256),
+  `Crime type`            varchar(256),
+  `Last outcome category` varchar(256),
+  `Context`               varchar(256))
+partitioned by (dateval string)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/crimes"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+```SQL
+alter table crimes_tmp add partition (dateval = '2015-10')
+location '/user/bilekpe5/dataPolice/crimes/2015-10'; 
+alter table crimes_tmp add partition (dateval = '2015-11')
+location '/user/bilekpe5/dataPolice/crimes/2015-11'; 
+alter table crimes_tmp add partition (dateval = '2015-12')
+location '/user/bilekpe5/dataPolice/crimes/2015-12'; 
+alter table crimes_tmp add partition (dateval = '2016-01')
+location '/user/bilekpe5/dataPolice/crimes/2016-01'; 
+alter table crimes_tmp add partition (dateval = '2016-02')
+location '/user/bilekpe5/dataPolice/crimes/2016-02'; 
+alter table crimes_tmp add partition (dateval = '2016-03')
+location '/user/bilekpe5/dataPolice/crimes/2016-03'; 
+alter table crimes_tmp add partition (dateval = '2016-04')
+location '/user/bilekpe5/dataPolice/crimes/2016-04'; 
+alter table crimes_tmp add partition (dateval = '2016-05')
+location '/user/bilekpe5/dataPolice/crimes/2016-05'; 
+alter table crimes_tmp add partition (dateval = '2016-06')
+location '/user/bilekpe5/dataPolice/crimes/2016-06'; 
+alter table crimes_tmp add partition (dateval = '2016-07')
+location '/user/bilekpe5/dataPolice/crimes/2016-07'; 
+alter table crimes_tmp add partition (dateval = '2016-08')
+location '/user/bilekpe5/dataPolice/crimes/2016-08'; 
+alter table crimes_tmp add partition (dateval = '2016-09')
+location '/user/bilekpe5/dataPolice/crimes/2016-09'; 
+alter table crimes_tmp add partition (dateval = '2016-10')
+location '/user/bilekpe5/dataPolice/crimes/2016-10'; 
+alter table crimes_tmp add partition (dateval = '2016-11')
+location '/user/bilekpe5/dataPolice/crimes/2016-11'; 
+alter table crimes_tmp add partition (dateval = '2016-12')
+location '/user/bilekpe5/dataPolice/crimes/2016-12'; 
+alter table crimes_tmp add partition (dateval = '2017-01')
+location '/user/bilekpe5/dataPolice/crimes/2017-01'; 
+alter table crimes_tmp add partition (dateval = '2017-02')
+location '/user/bilekpe5/dataPolice/crimes/2017-02'; 
+alter table crimes_tmp add partition (dateval = '2017-03')
+location '/user/bilekpe5/dataPolice/crimes/2017-03'; 
+alter table crimes_tmp add partition (dateval = '2017-04')
+location '/user/bilekpe5/dataPolice/crimes/2017-04'; 
+alter table crimes_tmp add partition (dateval = '2017-05')
+location '/user/bilekpe5/dataPolice/crimes/2017-05'; 
+alter table crimes_tmp add partition (dateval = '2017-06')
+location '/user/bilekpe5/dataPolice/crimes/2017-06'; 
+alter table crimes_tmp add partition (dateval = '2017-07')
+location '/user/bilekpe5/dataPolice/crimes/2017-07'; 
+alter table crimes_tmp add partition (dateval = '2017-08')
+location '/user/bilekpe5/dataPolice/crimes/2017-08'; 
+alter table crimes_tmp add partition (dateval = '2017-09')
+location '/user/bilekpe5/dataPolice/crimes/2017-09'; 
+alter table crimes_tmp add partition (dateval = '2017-10')
+location '/user/bilekpe5/dataPolice/crimes/2017-10'; 
+alter table crimes_tmp add partition (dateval = '2017-11')
+location '/user/bilekpe5/dataPolice/crimes/2017-11'; 
+alter table crimes_tmp add partition (dateval = '2017-12')
+location '/user/bilekpe5/dataPolice/crimes/2017-12'; 
+alter table crimes_tmp add partition (dateval = '2018-01')
+location '/user/bilekpe5/dataPolice/crimes/2018-01'; 
+alter table crimes_tmp add partition (dateval = '2018-02')
+location '/user/bilekpe5/dataPolice/crimes/2018-02'; 
+alter table crimes_tmp add partition (dateval = '2018-03')
+location '/user/bilekpe5/dataPolice/crimes/2018-03'; 
+alter table crimes_tmp add partition (dateval = '2018-04')
+location '/user/bilekpe5/dataPolice/crimes/2018-04'; 
+alter table crimes_tmp add partition (dateval = '2018-05')
+location '/user/bilekpe5/dataPolice/crimes/2018-05'; 
+alter table crimes_tmp add partition (dateval = '2018-06')
+location '/user/bilekpe5/dataPolice/crimes/2018-06'; 
+alter table crimes_tmp add partition (dateval = '2018-07')
+location '/user/bilekpe5/dataPolice/crimes/2018-07'; 
+alter table crimes_tmp add partition (dateval = '2018-08')
+location '/user/bilekpe5/dataPolice/crimes/2018-08'; 
+alter table crimes_tmp add partition (dateval = '2018-09')
+location '/user/bilekpe5/dataPolice/crimes/2018-09';
+```
+
+##### outcomes_tmp
+
+```SQL
+CREATE EXTERNAL TABLE outcomes_tmp (
+  `Crime ID`      varchar(256),
+  `Month`         varchar(256),
+  `Reported by`   varchar(256),
+  `Falls within`  varchar(256),
+  `Longitude`     float,
+  `Latitude`      float,
+  `Location`      varchar(256),
+  `LSOA code`     varchar(256),
+  `LSOA name`     varchar(256),
+  `Outcome type`  varchar(256))
+partitioned by (dateval string)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/outcomes"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+```SQL
+alter table outcomes_tmp add partition (dateval = '2015-10')
+location '/user/bilekpe5/dataPolice/outcomes/2015-10'; 
+alter table outcomes_tmp add partition (dateval = '2015-11')
+location '/user/bilekpe5/dataPolice/outcomes/2015-11'; 
+alter table outcomes_tmp add partition (dateval = '2015-12')
+location '/user/bilekpe5/dataPolice/outcomes/2015-12'; 
+alter table outcomes_tmp add partition (dateval = '2016-01')
+location '/user/bilekpe5/dataPolice/outcomes/2016-01'; 
+alter table outcomes_tmp add partition (dateval = '2016-02')
+location '/user/bilekpe5/dataPolice/outcomes/2016-02'; 
+alter table outcomes_tmp add partition (dateval = '2016-03')
+location '/user/bilekpe5/dataPolice/outcomes/2016-03'; 
+alter table outcomes_tmp add partition (dateval = '2016-04')
+location '/user/bilekpe5/dataPolice/outcomes/2016-04'; 
+alter table outcomes_tmp add partition (dateval = '2016-05')
+location '/user/bilekpe5/dataPolice/outcomes/2016-05'; 
+alter table outcomes_tmp add partition (dateval = '2016-06')
+location '/user/bilekpe5/dataPolice/outcomes/2016-06'; 
+alter table outcomes_tmp add partition (dateval = '2016-07')
+location '/user/bilekpe5/dataPolice/outcomes/2016-07'; 
+alter table outcomes_tmp add partition (dateval = '2016-08')
+location '/user/bilekpe5/dataPolice/outcomes/2016-08'; 
+alter table outcomes_tmp add partition (dateval = '2016-09')
+location '/user/bilekpe5/dataPolice/outcomes/2016-09'; 
+alter table outcomes_tmp add partition (dateval = '2016-10')
+location '/user/bilekpe5/dataPolice/outcomes/2016-10'; 
+alter table outcomes_tmp add partition (dateval = '2016-11')
+location '/user/bilekpe5/dataPolice/outcomes/2016-11'; 
+alter table outcomes_tmp add partition (dateval = '2016-12')
+location '/user/bilekpe5/dataPolice/outcomes/2016-12'; 
+alter table outcomes_tmp add partition (dateval = '2017-01')
+location '/user/bilekpe5/dataPolice/outcomes/2017-01'; 
+alter table outcomes_tmp add partition (dateval = '2017-02')
+location '/user/bilekpe5/dataPolice/outcomes/2017-02'; 
+alter table outcomes_tmp add partition (dateval = '2017-03')
+location '/user/bilekpe5/dataPolice/outcomes/2017-03'; 
+alter table outcomes_tmp add partition (dateval = '2017-04')
+location '/user/bilekpe5/dataPolice/outcomes/2017-04'; 
+alter table outcomes_tmp add partition (dateval = '2017-05')
+location '/user/bilekpe5/dataPolice/outcomes/2017-05'; 
+alter table outcomes_tmp add partition (dateval = '2017-06')
+location '/user/bilekpe5/dataPolice/outcomes/2017-06'; 
+alter table outcomes_tmp add partition (dateval = '2017-07')
+location '/user/bilekpe5/dataPolice/outcomes/2017-07'; 
+alter table outcomes_tmp add partition (dateval = '2017-08')
+location '/user/bilekpe5/dataPolice/outcomes/2017-08'; 
+alter table outcomes_tmp add partition (dateval = '2017-09')
+location '/user/bilekpe5/dataPolice/outcomes/2017-09'; 
+alter table outcomes_tmp add partition (dateval = '2017-10')
+location '/user/bilekpe5/dataPolice/outcomes/2017-10'; 
+alter table outcomes_tmp add partition (dateval = '2017-11')
+location '/user/bilekpe5/dataPolice/outcomes/2017-11'; 
+alter table outcomes_tmp add partition (dateval = '2017-12')
+location '/user/bilekpe5/dataPolice/outcomes/2017-12'; 
+alter table outcomes_tmp add partition (dateval = '2018-01')
+location '/user/bilekpe5/dataPolice/outcomes/2018-01'; 
+alter table outcomes_tmp add partition (dateval = '2018-02')
+location '/user/bilekpe5/dataPolice/outcomes/2018-02'; 
+alter table outcomes_tmp add partition (dateval = '2018-03')
+location '/user/bilekpe5/dataPolice/outcomes/2018-03'; 
+alter table outcomes_tmp add partition (dateval = '2018-04')
+location '/user/bilekpe5/dataPolice/outcomes/2018-04'; 
+alter table outcomes_tmp add partition (dateval = '2018-05')
+location '/user/bilekpe5/dataPolice/outcomes/2018-05'; 
+alter table outcomes_tmp add partition (dateval = '2018-06')
+location '/user/bilekpe5/dataPolice/outcomes/2018-06'; 
+alter table outcomes_tmp add partition (dateval = '2018-07')
+location '/user/bilekpe5/dataPolice/outcomes/2018-07'; 
+alter table outcomes_tmp add partition (dateval = '2018-08')
+location '/user/bilekpe5/dataPolice/outcomes/2018-08'; 
+alter table outcomes_tmp add partition (dateval = '2018-09')
+location '/user/bilekpe5/dataPolice/outcomes/2018-09'; 
+```
+
+##### stopandsearch_tmp
+
+```SQL
+CREATE EXTERNAL TABLE stopandsearch_tmp (
+  `Type`                                      varchar(64),
+  `Date`                                      varchar(128),
+  `Part of a policing operation`              varchar(16),
+  `Policing`                                  varchar(256),
+  `Latitude`                                  float,
+  `Longitude`                                 float,
+  `Gender`                                    varchar(32),
+  `Age range`                                 varchar(64),
+  `Self-defined ethnicity`                    varchar(256),
+  `Officer-defined ethnicity`                 varchar(128),
+  `Legislation`                               varchar(256),
+  `Object of search`                          varchar(128),
+  `Outcome`                                   varchar(256),
+  `Outcome linked to object of search`        varchar(16),
+  `Removal of more than just outer clothing`  varchar(16))
+partitioned by (dateval string)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+  LOCATION "/user/bilekpe5/dataPolice/stopandsearch"
+  tblproperties ("skip.header.line.count"="1");
+```
+
+```SQL
+alter table stopandsearch_tmp add partition (dateval = '2015-10')
+location '/user/bilekpe5/dataPolice/stopandsearch/2015-10'; 
+alter table stopandsearch_tmp add partition (dateval = '2015-11')
+location '/user/bilekpe5/dataPolice/stopandsearch/2015-11'; 
+alter table stopandsearch_tmp add partition (dateval = '2015-12')
+location '/user/bilekpe5/dataPolice/stopandsearch/2015-12'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-01')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-01'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-02')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-02'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-03')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-03'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-04')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-04'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-05')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-05'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-06')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-06'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-07')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-07'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-08')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-08'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-09')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-09'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-10')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-10'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-11')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-11'; 
+alter table stopandsearch_tmp add partition (dateval = '2016-12')
+location '/user/bilekpe5/dataPolice/stopandsearch/2016-12'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-01')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-01'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-02')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-02'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-03')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-03'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-04')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-04'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-05')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-05'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-06')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-06'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-07')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-07'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-08')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-08'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-09')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-09'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-10')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-10'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-11')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-11'; 
+alter table stopandsearch_tmp add partition (dateval = '2017-12')
+location '/user/bilekpe5/dataPolice/stopandsearch/2017-12'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-01')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-01'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-02')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-02'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-03')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-03'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-04')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-04'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-05')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-05'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-06')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-06'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-07')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-07'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-08')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-08'; 
+alter table stopandsearch_tmp add partition (dateval = '2018-09')
+location '/user/bilekpe5/dataPolice/stopandsearch/2018-09';
+```
+
+### Finální tabulky
 
 ## Úkoly
 
