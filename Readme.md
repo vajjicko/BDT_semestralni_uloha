@@ -53,7 +53,7 @@ Pro vypracování některých úkolů bylo potřeba použít převodních číse
 **Ward to county**: [Data](http://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2016-lookup-in-united-kingdom-v2)
 
 ## Technologie
-V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT - Hadoop od MetaCentrum - s Apache Hive.
+V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT (Hadoop od MetaCentrum) s Apache Hive.
 
 ### Dočasné tabulky
 Tabulky byly vytvářeny v databázi **bilekpe5**.
