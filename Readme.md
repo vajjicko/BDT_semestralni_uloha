@@ -739,6 +739,7 @@ crimes WHERE `LSOA name` IS NOT NULL AND `LSOA Name` != '' GROUP BY `LSOA name`,
 
 #### Data v CSV
 Odkaz na data ve formátu csv: [t2_1.csv](data/t2_1.csv)
+
 Odkaz na data ve formátu csv: [t2_2.csv](data/t2_2.csv)
 
 ### TASK 3
@@ -1089,7 +1090,9 @@ ORDER BY countybrexit.`Electorate` DESC, countycrimes.`count` DESC;
 
 #### Data v CSV
 Odkaz na data ve formátu csv: [t11_region.csv](data/t11_region.csv)
+
 Odkaz na data ve formátu csv: [t11_area.csv](data/t11_area.csv)
+
 Odkaz na data ve formátu csv: [t11_area_crime_type.csv](data/t11_area_crime_type.csv)
 
 ## Závěr
