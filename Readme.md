@@ -693,9 +693,9 @@ Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)
 #### Komentář
 
 #### Výsledná data
-<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1305914394&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:B11"></iframe>
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1305914394&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B11"></iframe>
 
-<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=879348330&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:C11"></iframe>
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=879348330&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:C11"></iframe>
 
 #### SQL
 
@@ -722,7 +722,7 @@ Jak se vyvíjejí časově počty evidovaných případů?
 #### Komentář
 
 #### Výsledná data
-<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=531591978&amp;single=true&amp;widget=true&amp;headers=false"&amp;range=A1:B37"></iframe>
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=531591978&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B37"></iframe>
 
 #### Vizualizace výsledku
 <iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=676107843&amp;format=interactive"></iframe>
@@ -737,17 +737,56 @@ SELECT `Month`, COUNT(`Crime ID`) AS Count FROM crimes GROUP BY `MONTH` ORDER BY
 
 ### TASK 4
 #### Zadání
+K dispozici jsou i data o výsledcích jednotlivých případů. Jaký je v jednotlivých kategoriích podíl případů, kde se nenašel podezřelý?
+
 #### Komentář
+
 #### Výsledná data
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1510689825&amp;single=true&amp;widget=true&amp;headers=falserange=A1:A24"></iframe>
+
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=285903865&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:E14"></iframe>
+
 #### Vizualizace výsledku
+<iframe height="449" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=976108226&amp;format=interactive"></iframe>
+
 #### SQL
+```SQL
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT DISTINCT `Outcome type` from outcomes;
+```
+
+```SQL
+WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
+allinfo as( SELECT crimes.`Crime ID`, crimes.`Crime type`, outcomesunique.`Outcome type` FROM crimes JOIN outcomesunique ON (crimes.`Crime ID` = outcomesunique.`Crime ID`)),
+allcrimes as( SELECT * FROM (SELECT `Crime type`, COUNT(`Crime type`) as count FROM allinfo WHERE `Crime type` IS NOT NULL AND `Crime type` != '' GROUP BY `Crime type`) as res),
+nosuspectcrimes as( SELECT * FROM (SELECT `Crime type`, COUNT(`Crime type`) as count FROM allinfo WHERE `Crime type` IS NOT NULL AND `Crime type` != '' AND `Outcome type` LIKE '%no suspect identified%' GROUP BY `Crime type`) as res)
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+SELECT allcrimes.`Crime type`, allcrimes.count as `All solved crimes`, (allcrimes.count-nosuspectcrimes.count) as `Successfully solved crimes`, nosuspectcrimes.count as `No suspect`, (nosuspectcrimes.count/allcrimes.count) AS Ratio FROM allcrimes LEFT JOIN nosuspectcrimes ON (allcrimes.`Crime type` = nosuspectcrimes.`Crime type`) ORDER BY Ratio;
+```
 
 ### TASK 5
 #### Zadání
+Jak dlouho trvá, než se vyřeší případ (pro různé kategorie zločinu)?
+
 #### Komentář
+
 #### Výsledná data
+<iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=552744617&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:B14"></iframe>
+
 #### Vizualizace výsledku
+<iframe height="371" style="width:100%;" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubchart?oid=466948217&amp;format=interactive"></iframe>
+
 #### SQL
+```SQL
+WITH outcomesunique as(SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY outcomes.`Crime ID` ORDER BY to_date(from_unixtime(UNIX_TIMESTAMP(outcomes.`Month`,'yyyy-MM'))) DESC) AS ROW_NUM FROM outcomes) AS res WHERE res.ROW_NUM = 1),
+crimeProcedure as(SELECT crimes.`Crime type`, outcomesunique.`Month` as end_date, crimes.`Month` as start_date FROM outcomesunique
+JOIN crimes ON (outcomesunique.`Crime ID`=crimes.`Crime ID`))
+SELECT crimeProcedure.`Crime type` as `Crime type`, AVG(DATEDIFF(to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.end_date,'yyyy-MM'))),to_date(from_unixtime(UNIX_TIMESTAMP(crimeProcedure.start_date,'yyyy-MM'))))) AS `Average solve time` FROM crimeProcedure GROUP BY crimeProcedure.`Crime type` ORDER BY `Average solve time`;
+```
 
 ### TASK 6
 #### Zadání
