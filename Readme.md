@@ -1,5 +1,56 @@
 # BDT - Semestrální úloha
 
+# Autoři
+## Petr Bílek
+<bilekpe5@fel.cvut.cz>
+
+[LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
+
+![Petr Bílek - foto](./assets/profile_pictures/bilekpe5.jpg "Petr Bílek - foto")
+
+* absolvent bakalářského studia ČVUT FEL, program Softwarové technologie a management, obor Web a multimédia
+* student magisterského programu na ČVUT FEL, program Otevřená informatika, obor HCI (Human-Computer Interaction)
+* zkušenosti s UAT testováním aplikací v bankovním sektoru
+* zkušenosti se softwarovou analýzou
+* zkušenosti s vývojem a údržbou automatizovaného frameworku pro kontrolu datové kvality v bankovním prostředí
+* zkušenosti s návrhem DB (Oracle)
+* pracovní pozice:
+  * software tester
+  * BI Developer (junior pozice)
+  * specialista procesního rozvoje
+
+## Vojtěch Gintner
+<gintnvoj@fel.cvut.cz>
+
+[Portfolio](https://vojgin.com)
+[LinkedIn](https://www.linkedin.com/in/vojgin/)
+
+![Vojtěch Gintner - foto](./assets/profile_pictures/gintnvoj.jpeg "Vojtěch Gintner - foto")
+
+* Více jak 7 let zkušeností s návrhem a vývojem webových i mobilních aplikací.
+* Absolvent bakalářského studia na ČVUT v oboru Web a Multimedia.
+* Studentem ČVUT v magisterském oboru návrhu a testování uživatelských prostředí.
+* Rozsáhlé zkušenosti s webovými technologiemi, zejména pak JavaScript.
+* Pracovní zkušenosti zahrnují práci ve startupech a středně velkých firmách zahraničních i tuzemských.
+* Pracovní pozice:
+  * FrontEnd Coder
+  * FrontEnd Developer
+  * JavaScript Developer
+  * UI Designer
+  * UX Designer
+* Akademická práce na výzkumu v oblasti User Experience zrakově postižených uživatelů, vývoj outdoorové navigační aplikace pro zrakově postižené
+* Několik veřejných tuzemských i zahraničních přednášek na téma User Experience a User research
+
+## Václav Pavlovec
+<pavlova1@fel.cvut.cz>
+
+![Václav Pavlovec - foto](./assets/profile_pictures/pavlova1.jpg "Václav Pavlovec - foto")
+
+* absolvent bakalářského studia ČVUT FEL (summa cum laude), program Softwarové technologie a management, obor Web a multimédia
+* student magisterského programu ČVUT FEL, program Otevřená informatika, obor HCI (Human-Computer Interaction)
+* Zkušenost s návrhem a prací s DB (Oracle)
+* Zkušenosti s finančním risk managementem
+
 ## Obsah
 * [Úvod](#úvod)
 * [Data](#data)
@@ -719,9 +770,6 @@ GROUP BY `Crime type`
 ORDER BY COUNT DESC;
 ```
 
-#### Data v CSV
-Odkaz na data ve formátu csv: [t1.csv](data/t1.csv)
-
 ### TASK 2
 #### Zadání
 Který útvar eviduje nejvíce případů (případně po kategoriích zločinu)?
@@ -763,11 +811,6 @@ ORDER BY res.count DESC
 LIMIT 10;
 ```
 
-#### Data v CSV
-Odkaz na data ve formátu csv: [t2_1.csv](data/t2_1.csv)
-
-Odkaz na data ve formátu csv: [t2_2.csv](data/t2_2.csv)
-
 ### TASK 3
 #### Zadání
 Jak se vyvíjejí časově počty evidovaných případů?
@@ -788,9 +831,6 @@ FROM crimes
 GROUP BY `MONTH`
 ORDER BY `Month` ASC;
 ```
-
-#### Data v CSV
-Odkaz na data ve formátu csv: [t3.csv](data/t3.csv)
 
 ### TASK 4
 #### Zadání
