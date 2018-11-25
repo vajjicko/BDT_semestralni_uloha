@@ -784,7 +784,7 @@ Výsledky dotazů byly ukládány do souborů, ze kterých bylo následně sesta
 
 Do všech dotazů byl přidán následující kus kódu, který zajistil generování výsledků do souborů.
 ```SQL
-INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results'
+INSERT OVERWRITE DIRECTORY '/user/bilekpe5/results/resultT*'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
 ```
