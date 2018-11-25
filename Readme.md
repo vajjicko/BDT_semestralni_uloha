@@ -876,6 +876,9 @@ ORDER BY `Month` ASC;
 K dispozici jsou i data o výsledcích jednotlivých případů. Jaký je v jednotlivých kategoriích podíl případů, kde se nenašel podezřelý?
 
 #### Komentář
+Nejprve pomocí prvního dotazu zjistíme kategorii vyřešení případů, která odpovídá situaci, kdy se nenašel podezřelý.
+
+Druhým dotazem poté získáme podíl takových případů v jednotlivých kategoriích.
 
 #### Výsledná data
 <iframe height="450" style="width:100%;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT8kFoVB6TB8-bQCMInVBvB2l2HuElhyXmWn8kBtQ2BRCGmejcSKpZU_zNOJaqtfrT98rQPWC0tOn7Y/pubhtml?gid=1510689825&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:A24"></iframe>
