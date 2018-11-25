@@ -6,8 +6,6 @@
 
 [LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
 
-<img src="https://github.com/vajjicko/BDT_semestralni_uloha/blob/master/assets/profile_pictures/bilekpe5.jpg" width="200">
-
 ![Petr Bílek - foto](./assets/profile_pictures/bilekpe5.jpg "Petr Bílek - foto")
 
 * absolvent bakalářského studia ČVUT FEL, program Softwarové technologie a management, obor Web a multimédia
@@ -76,7 +74,7 @@
 * [Závěr](#závěr)
 
 ## Úvod
-Cílem této práce je zpracovat data o kriminalitě ze Spojeného královstí a vypracovat 11 úkolů. Ke zpracování jsme využili technologie Hive, nám přistupné na MetaCentrum: hador.ics.muni.cz. K dotazování jsme využili jazyka SQL. Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
+Cílem této práce je zpracovat data o kriminalitě ze Spojeného královstí a vypracovat 11 úkolů. Ke zpracování jsme využili technologie Hive, nám přistupné na MetaCentrum: hador.ics.muni.cz. K dotazování jsme využili jazyka HiveQL. Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 
 ## Data
 V rámci semestrální práce byla analyzována volně dostupná data o zločinnosti a and policii v Anglii, Walesu a Severním Irsku v období od října 2015 do září 2018 včetně.
@@ -107,6 +105,21 @@ Pro vypracování některých úkolů bylo potřeba použít převodních číse
 
 ## Technologie
 V rámci semestrální práce byl využíván Hadoop poskytnutý pro předmět BDT (Hadoop od MetaCentrum) s Apache Hive.
+
+Na serveru *hador* byla vytvořena následující struktura, která byla naplněna daty:
+```
+dataPolice/
+* brexit
+* county
+* crimes
+* outcomes
+* population
+* region
+* stopandsearch
+* ward
+```
+
+Tato datová stuktura byla přenesena i na HDFS, kde byla využita k naplnění dočasných tabulek.
 
 ### Dočasné tabulky
 Tabulky byly vytvářeny v databázi **bilekpe5**.
@@ -771,6 +784,8 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' --pripadne u TASK 11: FIELDS TERMINATED BY '\;'
 ```
 
+
+Vizualizace byla provedena pomocí Google Docs, Google Maps API a amCharts.
 ## Úkoly
 
 ### TASK 1
