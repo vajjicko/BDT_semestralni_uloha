@@ -4,7 +4,8 @@
 ## Petr Bílek
 <bilekpe5@fel.cvut.cz>
 
-![linkedin](./assets/icons/linkedin.png "LinkedIn - icon") [LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
+![linkedin](./assets/icons/linkedin.png "LinkedIn - icon") 
+[LinkedIn](https://www.linkedin.com/in/petr-b%C3%ADlek-57295346/)
 
 ![Petr Bílek - foto](./assets/profile_pictures/bilekpe5.jpg "Petr Bílek - foto")
 
@@ -24,7 +25,8 @@
 
 [Portfolio](https://vojgin.com)
 
-![linkedin](./assets/icons/linkedin.png "LinkedIn - icon") [LinkedIn](https://www.linkedin.com/in/vojgin/)
+![linkedin](./assets/icons/linkedin.png "LinkedIn - icon") 
+[LinkedIn](https://www.linkedin.com/in/vojgin/)
 
 ![Vojtěch Gintner - foto](./assets/profile_pictures/gintnvoj.jpeg "Vojtěch Gintner - foto")
 
